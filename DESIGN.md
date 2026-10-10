@@ -1,207 +1,172 @@
 ---
 name: CloudOps AI
-description: The Drafting Sheet — a measured engineering-drawing interface for cloud infrastructure.
+description: The operations console — a calm white workspace where every cloud measurement is plotted and every redline waits for review.
 colors:
-  paper: "#f3f5f7"
-  paper-2: "#eceff2"
-  sheet: "#ffffff"
-  ink: "#16202b"
-  ink-2: "#35424e"
-  ink-3: "#4b5865"
-  ink-4: "#5e6a76"
-  rule: "#dbe1e7"
-  rule-2: "#c7d0d8"
-  grid: "#e8edf1"
-  drafting-blue: "#1f5fbf"
-  drafting-blue-strong: "#174b99"
-  drafting-blue-soft: "#e9f0fa"
-  drafting-blue-line: "#aec7e8"
-  red-pencil: "#c2482f"
-  amber-signal: "#7d560b"
-  ok-green: "#2c7a57"
-  slate: "#33414f"
+  ground: "#f9fbfc"
+  surface: "#ffffff"
+  ink: "#141721"
+  ink-2: "#3d4351"
+  ink-3: "#5c6470"
+  muted: "#6b7280"
+  line: "#e9edf1"
+  line-strong: "#d8dee5"
+  accent: "#dc589a"
+  accent-strong: "#b02368"
+  accent-soft: "#fcf2f8"
+  accent-line: "#f2c4dd"
+  ok: "#0a7a47"
+  ok-soft: "#e7f6ee"
+  warn: "#b54708"
+  warn-soft: "#fdf3e4"
+  danger: "#b42318"
+  danger-soft: "#fdecea"
+  button-ink: "#202936"
 typography:
-  display:
-    fontFamily: "Archivo, system-ui, sans-serif"
-    fontSize: "26px"
-    fontWeight: 600
-    lineHeight: 1.15
-    letterSpacing: "-0.02em"
-  title:
-    fontFamily: "Archivo, system-ui, sans-serif"
-    fontSize: "18px"
-    fontWeight: 600
-    lineHeight: 1.2
-    letterSpacing: "-0.015em"
-  body:
-    fontFamily: "Archivo, system-ui, sans-serif"
-    fontSize: "13px"
-    fontWeight: 400
-    lineHeight: 1.5
-  label:
-    fontFamily: "JetBrains Mono, monospace"
-    fontSize: "10px"
-    fontWeight: 500
-    letterSpacing: "0.1em"
-  measurement:
-    fontFamily: "JetBrains Mono, monospace"
-    fontSize: "24px"
-    fontWeight: 500
-    lineHeight: 1.1
-rounded:
-  xs: "2px"
-  sm: "3px"
-  md: "4px"
-  lg: "6px"
-spacing:
-  s1: "4px"
-  s2: "8px"
-  s3: "12px"
-  s4: "16px"
-  s5: "20px"
-  s6: "24px"
-  s7: "32px"
-  s8: "40px"
-  s9: "56px"
-components:
-  button-primary:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.sheet}"
-    rounded: "{rounded.xs}"
-    padding: "8px 12px"
-  button-primary-hover:
-    backgroundColor: "{colors.drafting-blue}"
-    textColor: "{colors.sheet}"
-  button-secondary:
-    backgroundColor: "{colors.sheet}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.xs}"
-    padding: "8px 12px"
-  panel:
-    backgroundColor: "{colors.sheet}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.xs}"
+  ui:
+    fontFamily: "Schibsted Grotesk, system-ui, sans-serif"
+    reason: "A precise neo-grotesque close to the pinned reference's neutral UI voice, outside the default-reach list."
+  data:
+    fontFamily: "JetBrains Mono, ui-monospace, monospace"
+    reason: "Strictly identifiers, costs and tabular data: the measurement face, never a costume."
+  scale:
+    page: { fontSize: "28px", fontWeight: 600, letterSpacing: "-0.02em" }
+    card: { fontSize: "15px", fontWeight: 600 }
+    body: { fontSize: "13px", fontWeight: 400, lineHeight: 1.5 }
+    meta: { fontSize: "12px" }
+    kpi: { fontSize: "30px", fontWeight: 600, variantNumeric: "tabular-nums" }
+    table: { fontSize: "13px", rowHeight: "48px" }
+spacing: [4, 8, 12, 16, 20, 24, 32, 40, 56]
+radius:
+  control: "8px"
+  card: "10px"
+  panel: "12px"
+  pill: "999px"
+elevation:
+  card: "0 1px 2px rgba(20,23,33,0.04), 0 1px 3px rgba(20,23,33,0.06)"
+  toast: "0 10px 30px rgba(20,23,33,0.16)"
+layout:
+  rail: "248px"
+  titleblock: "64px"
+  contentMax: "1440px"
+  contentPad: "32px"
+  drawerBreakpoint: "860px"
 ---
 
 # Design System: CloudOps AI
 
 ## Overview
 
-**Creative North Star: "The Drafting Sheet"**
+**Creative North Star: "The Operations Console"** (pinned reference: the beehiiv
+dashboard, `beehiiv Web 193.png`). White cards on a cool near-white ground, one
+magenta-pink data accent, comfortable density. The Overview is chart-forward:
+the signal curve is the loudest element, the findings queue sits beside it, and
+the measurement register is a quiet row of four cards above both.
 
-CloudOps AI renders an AWS account as a measured engineering drawing. The interface is a drawing set: a numbered sheet index, a title block, a register of measured dimensions, and figures plotted on graph paper. It exists to make cloud state legible and, above all, honest — what was measured, what was not, and what to redline.
-
-The system refuses the category's default glowing dark AI dashboard. There is no neon, no purple gradient, no glass, no hero-metric card wall. Depth comes from hairline rules and paper value, not from soft shadows or rounded cards. Density is high but ruled: every section is separated by a 1px line and aligned to a consistent measure.
-
-Expression is deliberately quiet because the surface is Operate: cloud engineers, architects, FinOps teams, and evaluators need to trust the tool immediately and read real signal fast. The drafting world supplies precision, not decoration.
-
-**Key Characteristics:**
-- Cool drafting paper with hairline rules and a faint 24px graph grid reserved for measurement surfaces.
-- Ink for text, one structural drafting-blue accent, and red-pencil reserved for severity.
-- Archivo for all interface text; JetBrains Mono for every number, key, and ID.
-- Flat white sheet panels with near-square corners and corner registration ticks; no soft shadows.
-- Honest empty states: an unmeasured value is an em dash, never a fabricated figure.
+The world refuses the dark glowing "AI dashboard", the navy dev-tool cliché,
+and KPI-card wallpaper with no chart anywhere. Depth comes from a hairline card
+border plus one soft card shadow; the toast is the only surface that floats.
+The read-only promise and the honesty rule (an unmeasured value is an em dash,
+never an invented number) are part of the design, not disclaimers under it.
 
 ## Colors
 
-A restrained palette: two paper neutrals, a four-step ink ramp, one structural blue, and a small set of functional signal colors.
+Sampled from the pinned reference's rendered pixels, then measured for contrast.
 
 ### Primary
-- **Drafting Blue** (#1f5fbf): the only structural accent. Used for links, primary-action hover, active navigation cues, focus rings, chart traces, and the "field note" marker. Rarity is the point.
+- **Signal pink** `#dc589a` (strong `#b02368`, soft `#fcf2f8`, line `#f2c4dd`):
+  the one data accent. Chart traces, active navigation, chart fills, links,
+  focus rings. Its job is measurement and selection; nothing else is pink.
+- **Button ink** `#202936`: the primary action ground ("Add a scan"), with the
+  hover at `#2c3a4c`.
 
-### Secondary
-- **Red Pencil** (#c2482f): severity and annotations only — high-severity findings, the redline callout number, error icons. Never decorative.
-- **Signal Amber** (#7d560b): "not available" / pending / medium severity. Darkened from a typical amber so it passes contrast on its own tint.
+### Status (four states, hue plus word plus shape)
+- OK `#0a7a47` on `#e7f6ee`: connected, running, reported savings.
+- Warn `#b54708` on `#fdf3e4`: unavailable, pending, medium severity.
+- Danger `#b42318` on `#fdecea`: high severity.
+- Neutral chips: ink on `--line` ground.
 
 ### Neutral
-- **Ink** (#16202b): primary text, strong rules, the primary button ground.
-- **Ink-2** (#35424e): secondary text and body copy in cards.
-- **Ink-3** (#4b5865): tertiary text, table body.
-- **Ink-4** (#5e6a76): metadata, labels, field keys (passes ≥4.5:1 on both paper and paper-2).
-- **Paper** (#f3f5f7) and **Paper-2** (#eceff2): the app ground and the secondary chrome layer (sidebar).
-- **Sheet** (#ffffff): panel and table surfaces.
-- **Rule** (#dbe1e7) / **Rule-2** (#c7d0d8): hairline dividers and control borders.
+- Ink `#141721` (headings, values), ink-2 `#3d4351` (body), ink-3 `#5c6470`
+  (secondary, table body), muted `#6b7280` (captions).
+- Ground `#f9fbfc`, surface `#ffffff`, line `#e9edf1`, line-strong `#d8dee5`.
 
 ### Named Rules
-**The Ruled-Not-Shadowed Rule.** Boundaries are drawn with 1px hairlines and paper value, never with soft shadow or a colored stripe.
-**The Red-Pencil Rule.** Red is reserved for severity and annotation. It never appears as decoration or as a primary action color.
+**The One-Accent Rule.** Pink carries data and selection; ink carries actions;
+status hues carry state. Three jobs, never confused.
+**The Honesty Rule.** A value the API did not return is an em dash with the
+reason beside it. Never a zero, never a guess.
 
 ## Typography
 
-**Display Font:** Archivo (with system-ui, sans-serif)
-**Body Font:** Archivo (with system-ui, sans-serif)
-**Label/Mono Font:** JetBrains Mono (with ui-monospace, monospace)
+**UI:** Schibsted Grotesk (self-hosted variable), metric-matched Arial fallback.
+**Data:** JetBrains Mono (self-hosted variable), tabular figures, for instance
+IDs, costs, dates and table numerals.
 
-**Character:** A single technical grotesque carries the whole interface, so hierarchy comes from size, weight, and the mono/sans split rather than a display pairing. Monospace is strictly the language of measurement: dimensions, IDs, costs, keys, and tabular figures.
-
-### Hierarchy
-- **Display** (600, 26px, 1.15, -0.02em): the sheet title (page h1). One per sheet.
-- **Title** (600, 18px, 1.2): block and panel headings (h2).
-- **Body** (400, 13px, 1.5): prose and descriptions; measure capped at 68–72ch.
-- **Label** (500, 10px, 0.1em, uppercase): field keys, section labels, table headers, plot metadata.
-- **Measurement** (500, 24px, JetBrains Mono): register values, rendered with tabular numerals.
-
-### Named Rules
-**The Mono-For-Measurement Rule.** Monospace is used only for data, identifiers, and measurement, never as a costume for "technical."
+Hierarchy: page title 28/600; card title 15/600; body 13/1.5; caption 12; KPI
+value 30/600 tabular; table 13px on 48px rows. Sentence case everywhere. Numbers
+that align or change are mono + tabular.
 
 ## Layout
 
-A fixed 264px sheet-index rail on the left, a 64px title-block header, and a content column capped at 1560px with 28/32px padding. The density rhythm steps 4/8/12/16/20/24/32/40/56px (`--s1`–`--s9`); sections are separated by 32px with a 1px ink rule above each block head, always more space above a heading than below.
-
-The measurement register is a single bordered row of four cells divided by hairlines. Plotted frames sit two-up on desktop. Responsive behavior is structural: the sidebar becomes a drawer at 860px, the register drops to two then one column at 1180/560px, chart panels stack at 860px, and wide tables scroll inside their panel rather than overflowing the page.
+248px rail (grouped Monitor/Govern navigation, then the read-only note and
+Settings as the last group at the foot of the rail), 64px title block, content
+capped at 1440px with 32px padding.
+The Overview: heading row with the data-status pill and Refresh, the four-card
+register, then the signal chart card beside the findings queue, then the resource
+table and the IaC review. The rail becomes a drawer at 860px; the register drops
+to two columns at 1180 and one at 560; the table scrolls inside its card on
+phones instead of overflowing the page.
 
 ## Elevation & Depth
 
-The system is flat by default. Depth is conveyed by tonal layering — paper ground, white sheet panels, hairline borders — not by shadows. Radius stays near-square (2px–4px), reinforcing a drawn and measured character.
-
-### Shadow Vocabulary
-- **Toast float** (`0 10px 30px rgba(22, 32, 43, 0.14)`): the only elevated surface, for the transient toast.
-- **Panel** (`0 1px 2px rgba(22, 32, 43, 0.04)`): a barely-there register hint; no card uses a soft drop shadow.
-
-### Named Rules
-**The Flat-By-Default Rule.** Surfaces are flat at rest; a shadow appears only on a transient overlay, never on a content card.
+Flat by default: one card shadow (a single soft layer at 5% ink), hover tints,
+no lift, no glow. The toast float is the only elevation above card level.
+Forced-colors mode keeps every control's shape through transparent borders.
 
 ## Shapes
 
-Near-square corners: 2px for controls and panels, 4px maximum, 6px only for the schematic nodes, and a pill only for status dots. Form language is rectilinear and ruled. The recurring motifs are the hairline border, the corner registration tick on register cells, and the graph grid inside plot frames. No large rounded cards, no blobs.
+Radius family 8 (controls) / 10 (cards) / 12 (panels) / pill (chips, dots);
+inner radii nest concentrically. No large rounded-hero shapes, no blobs, no
+circles masquerading as content.
 
 ## Components
 
-**Buttons** — rectilinear controls in the drafting vocabulary.
-- **Shape:** 2px radius, 1px border, 8px 12px padding, 12px/500 label.
-- **Primary:** ink ground with white text; hover shifts to drafting blue.
-- **Secondary / Ghost:** white ground with a rule-2 border; hover fills paper-2.
-- **Focus:** 2px drafting-blue outline at 2px offset.
-
-**Chips / Status pills** — mono uppercase labels at 10px, 2px radius, tone-tinted background and border (info/ok/warn/danger/neutral). A status dot is a 7px circle; loading/pending uses a soft ring.
-
-**Cards / Containers** — white sheet panels with a 1px rule border, 2px radius, flat (no shadow), 16–20px internal padding. Register cells add a 5px corner registration tick.
-
-**Inputs / Fields** — the search field is a 1px rule-2 bordered box with a mono placeholder; focus swaps the border to drafting blue with a soft blue ring. Disabled controls drop to 50% opacity and are not focusable.
-
-**Navigation** — a numbered "sheet index": mono 01–07 numbers, a 16px line icon, and a label. Active state is a white fill, a 1px drafting-blue-line border, and a blue index number; hover lifts to a white fill with a rule border. At 860px it becomes an off-canvas drawer.
-
-**Plotted Frame (signature)** — a bordered panel whose body is a 24px graph grid; when empty it shows a dashed inner frame with "NO MEASUREMENTS RECORDED". Data is drawn as a thin 1.75px trace with open-circle markers, mono axis ticks, and a mono tooltip.
-
-**Redline Callout (signature)** — a recommendation as a numbered revision balloon: a red 24px circle number, a severity marker, an "Example component" tag, and a spec list of resource / evidence / action.
-
-**IaC Schematic (signature)** — a horizontal flow of numbered nodes (pull request → Terraform plan → Infracost → CloudOps AI → human review) joined by ruled connectors with arrow icons, above a six-field review strip all set to honest dashes.
+- **Register cell** — white card: label (12/600 muted), value (30/600 tabular),
+  source note. Unmeasured value renders as an em dash in muted.
+- **Chart card** — the signal curve: recharts step-area, 2px accent stroke,
+  pink gradient fill, hairline horizontal grid, mono axis ticks, custom mono
+  tooltip. Draws itself in over ~900ms ease-out when data lands; reduced motion
+  gets the complete static frame.
+- **Findings queue** — severity dot, issue, severity chip, mono resource id,
+  reported saving (or em dash), Review expands to action/evidence/resource.
+- **Table card** — toolbar (mono-placeholder search, state filter buttons with
+  counts, sort toggle), 48px hairline rows, mono IDs, state chips, utilization
+  bar with mono value, per-row expandable detail, footer with counts.
+- **IaC review** — a two-column spec record of six fields, each an em dash with
+  the reason beside it, set in mono tabular figures. No plan is submitted from
+  the interface (read-only), so the record holds no diagram that would imply
+  one exists; it fills in when a plan arrives.
+- **Title block** — wordmark and AWS account on the left; the connection chip
+  (Connected green / Offline amber / Sample pink), the region, and the dark
+  primary button pushed to the right, so the heading reads from the edge and the
+  action lands in the same corner.
+- **Sample banner** — amber notice with bold "Sample data." prefix and a Load
+  live data action; reachable only via `?sample=1`.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** use hairline rules and paper value for separation; keep panels flat.
-- **Do** set every number, ID, and key in JetBrains Mono with tabular figures.
-- **Do** use drafting blue only for structure and state, and red pencil only for severity/annotations.
-- **Do** render unmeasured data as an em dash and label unavailable capability "Not available".
-- **Do** tag any illustrative example explicitly ("Example component") so it cannot be mistaken for real output.
-- **Do** keep body measure at 65–75ch and metadata text at ≥4.5:1 contrast.
+- Keep the chart the loudest element on the Overview.
+- Set IDs, costs and dates in mono tabular figures.
+- Use pink for data and selection only; ink for actions; hue+word+shape for status.
+- Render unavailable measurements as em dashes with the reason and the fix.
+- Give controls transparent borders so High Contrast keeps their shape.
 
 ### Don't:
-- **Don't** add eyebrow/kicker labels above headings; the heading carries its own weight.
-- **Don't** use a colored `border-left`/`border-right` accent above 1px on cards, list items, callouts, or alerts.
-- **Don't** use gradients, glass/blur decoration, neon, or purple "AI" styling.
-- **Don't** use soft drop shadows on content cards or large rounded-card shapes.
-- **Don't** use Unicode glyphs or emoji as icons; use the icon set.
-- **Don't** fabricate AWS metrics, costs, resources, savings, accounts, or regions.
-- **Don't** treat the decorative graph grid as a generic background; reserve it for measurement surfaces.
+- Add gradients, glows, orbs, or a dark "AI" theme.
+- Put a KPI row above a chart that does not exist yet.
+- Use pink decoration outside data/selection, or status hue without its word.
+- Fabricate deltas, trends, savings, or "vs last period" numbers the API does
+  not return.
+- Put hover-only information on the phone; the queue and table are complete
+  without hover.
