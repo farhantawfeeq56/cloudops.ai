@@ -91,10 +91,9 @@ function ResourceTable({ resources = [], metrics = [], loading = false, fullPage
   }, [resources])
 
   return (
-    <section className={`border-border border-t pt-6 ${fullPage ? 'flex-1' : ''}`}>
-      <div className="mb-4 space-y-1">
+    <section className={fullPage ? 'flex-1' : ''}>
+      <div className="mb-4">
         <h2 className="text-base font-semibold">Resources</h2>
-        <p className="text-muted-foreground text-sm">EC2 inventory from the latest read-only scan, newest first.</p>
       </div>
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">

@@ -125,11 +125,11 @@ and four status families. No gradients, no glows.
 ### Named Rules
 **The One-Accent Rule.** Teal carries data and selection; ink carries actions;
 status hues carry state. Three jobs, never confused.
-**The Fewer-Boxes Rule.** The page is the frame. A standalone section is
-separated by spacing and a single hairline rule — never a bordered, rounded,
-filled card. A tight pair that reads as one unit (the cost curve and the findings
-queue) may be boxed. In-row status is a dot + word, not a chip; buttons that only
-navigate are links.
+**The Fewer-Boxes Rule.** The page is the frame. Standalone sections are
+separated by spacing and a single hairline rule. A small set earns a box: the
+four KPI register cards, and a tight pair that reads as one unit (the cost curve
+and the findings queue). Everything else stays on the page. In-row status is a
+dot + word, not a chip; buttons that only navigate are links.
 **The Honesty Rule.** A value the API did not return is an em dash with the
 reason beside it. Never a zero, never a guess.
 
@@ -149,9 +149,9 @@ A shadcn `Sidebar` (collapsible to icons, drawer under 768px) and a sticky
 `SidebarInset` header with the sidebar trigger, the connection status and the
 primary action. Content is capped at 1440px and padded 16/24/32px.
 The Overview: heading row with the data-status pill and Refresh, a single
-register stat strip of four measurement cells, then the cost curve and the
-findings queue as two boxed panels side by side, then the resource table and the
-IaC record as hairline-separated sections on the page. Register cells go four-across at
+row of four KPI cards, then the cost curve and the findings queue as two boxed
+panels side by side, then the resource table and the IaC record on the page.
+Cost Analysis leads with its period tabs and has no page title. Register cells go four-across at
 `lg`, two at `sm`, one on phones.
 
 ## Elevation & Depth
@@ -172,9 +172,8 @@ Inner radii nest concentrically.
   in the footer, Settings last. Collapses to icons; becomes a Sheet on phones.
 - **Header** — sidebar trigger, wordmark and account, connection `StatusPill`,
   region, dark primary `Add a scan` button.
-- **Register** — a stat strip, not a card: four cells on the page, each a
-  label, a 30/600 tabular value and a source note. Unmeasured values are an em
-dash in muted.
+- **Register** — four KPI cards in a row: each a label, a 30/600 tabular value
+  and a source note. Unmeasured values are an em dash in muted.
 - **Cost panel** (boxed, left of the findings queue) — recharts step-area, 2px teal stroke, teal gradient fill,
   hairline grid, mono ticks, a popover tooltip. Draws in over ~900ms; reduced
   motion gets the static frame.

@@ -104,7 +104,7 @@ function PageHeading({ title, intro, actions }) {
   )
 }
 
-function CostPanel({ costs, dailyCosts, forecast, loading, period = 'monthly' }) {
+function CostPanel({ costs, dailyCosts, forecast, loading, period = 'monthly', boxed = false }) {
   const services = costs?.services || []
   const unavailable = costs?.status === 'unavailable' || !costs
   const range = costs?.start && costs?.end_inclusive ? `${costs.start} → ${costs.end_inclusive}` : period === 'monthly' ? 'Current billing period' : 'Rolling 30 days'
@@ -114,7 +114,7 @@ function CostPanel({ costs, dailyCosts, forecast, loading, period = 'monthly' })
   ]
   return (
     <Panel
-      boxed
+      boxed={boxed}
       title="Cost overview"
       description={<>{period === 'monthly' ? 'Cost Explorer, month to date' : 'Cost Explorer, rolling 30 days'}. <span className="font-mono">{range}</span></>}
       icon={<CircleDollarSign className="text-muted-foreground size-5" strokeWidth={1.8} />}
@@ -257,7 +257,6 @@ function IacSection({ heading = true }) {
   return (
     <Panel
       title={heading ? 'Infrastructure as Code review' : 'Review record'}
-      description="Every proposed change moves through cost analysis and human review. CloudOps AI never applies changes automatically."
     >
       <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
         {fields.map((field) => (
@@ -299,19 +298,13 @@ function CostAnalysis({ data, loading }) {
   const costs = period === 'monthly' ? data.costs : data.dailyCosts
   return (
     <>
-      <PageHeading
-        title={TITLES['Cost Analysis']}
-        intro={INTROS['Cost Analysis']}
-        actions={(
-          <Tabs value={period} onValueChange={setPeriod}>
-            <TabsList>
-              <TabsTrigger value="monthly">Month to date</TabsTrigger>
-              <TabsTrigger value="daily">Last 30 days</TabsTrigger>
-            </TabsList>
-          </Tabs>
-        )}
-      />
-      <section aria-label="Cost register" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <Tabs value={period} onValueChange={setPeriod}>
+        <TabsList>
+          <TabsTrigger value="monthly">Month to date</TabsTrigger>
+          <TabsTrigger value="daily">Last 30 days</TabsTrigger>
+        </TabsList>
+      </Tabs>
+      <section aria-label="Cost register" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <RegisterCell label="Period total" value={formatCurrency(costs?.total_cost, costs?.currency)} unmeasured={costs?.total_cost == null} note={costs?.start && costs?.end_inclusive ? `${costs.start} → ${costs.end_inclusive}` : 'Cost Explorer'} loading={loading} />
         <RegisterCell label="Services measured" value={costs?.services?.length == null ? DASH : String(costs.services.length)} unmeasured={!costs?.services?.length} note="Grouped by AWS service" loading={loading} />
         <RegisterCell label="Largest service" value={costs?.services?.[0] ? formatCurrency(costs.services[0].cost, costs.currency) : DASH} unmeasured={!costs?.services?.[0]} note={costs?.services?.[0]?.service || 'No service costs returned'} loading={loading} />
@@ -345,31 +338,31 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
         </Alert>
       )}
 
-      {(activePage === 'Overview' || activePage === 'Cost Analysis') && (
+      {activePage === 'Overview' && (
         <PageHeading
-          title={TITLES[activePage]}
-          intro={INTROS[activePage]}
-          actions={activePage === 'Overview' ? (
+          title={TITLES.Overview}
+          intro={INTROS.Overview}
+          actions={(
             <>
               <DataStatus data={data} loading={loading} lastUpdated={lastUpdated} sampleMode={sampleMode} />
               <Button variant="outline" onClick={reload} disabled={loading} title="Refresh backend data">
                 <RefreshCw className={loading ? 'size-4 animate-spin' : 'size-4'} /> Refresh
               </Button>
             </>
-          ) : null}
+          )}
         />
       )}
 
       {activePage === 'Overview' && (
         <>
-          <section aria-label="Measurement register" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <section aria-label="Measurement register" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <RegisterCell label="Monthly cloud cost" value={formatCurrency(data.costs?.total_cost, data.costs?.currency)} unmeasured={data.costs?.total_cost == null} note="Cost Explorer, month to date" loading={loading} />
             <RegisterCell label="Resources" value={data.resources?.total_instances == null ? DASH : String(data.resources.total_instances)} unmeasured={data.resources?.total_instances == null} note="EC2 instances discovered" loading={loading} />
             <RegisterCell label="Potential savings" value={savings > 0 ? formatCurrency(savings, data.costs?.currency) : DASH} unmeasured={!(savings > 0)} note="Only where a finding reports it" loading={loading} />
             <RegisterCell label="Active findings" value={data.insights?.total_findings == null ? DASH : String(data.insights.total_findings)} unmeasured={data.insights?.total_findings == null} note="Deterministic decision engine" loading={loading} />
           </section>
           <div className="grid gap-6 lg:grid-cols-2">
-            <CostPanel costs={data.costs} dailyCosts={data.dailyCosts} forecast={data.forecast} loading={loading} />
+            <CostPanel costs={data.costs} dailyCosts={data.dailyCosts} forecast={data.forecast} loading={loading} boxed />
             <FindingsPanel findings={findings} loading={loading} />
           </div>
           <ResourceTable resources={resources} metrics={data.metrics?.metrics || []} loading={loading} />
