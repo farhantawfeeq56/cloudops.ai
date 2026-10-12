@@ -219,7 +219,7 @@ function FindingsPanel({ findings, loading, fullPage = false }) {
           </div>
           {!fullPage && findings.length > shown.length && (
             <div className="border-border mt-1 border-t pt-3">
-              <Button variant="link" className="h-auto p-0" onClick={() => window.dispatchEvent(new CustomEvent('cloudops:navigate', { detail: 'AI Insights' }))}>
+              <Button variant="link" size="sm" className="h-auto p-0 text-xs" onClick={() => window.dispatchEvent(new CustomEvent('cloudops:navigate', { detail: 'AI Insights' }))}>
                 Open AI Insights for all {findings.length} findings
               </Button>
             </div>
@@ -347,7 +347,7 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
           intro={INTROS.Overview}
           badge={<DataStatus data={data} loading={loading} lastUpdated={lastUpdated} sampleMode={sampleMode} />}
           actions={(
-            <Button variant="outline" onClick={reload} disabled={loading} title="Refresh backend data">
+            <Button variant="ghost" size="sm" onClick={reload} disabled={loading} title="Refresh backend data">
               <RefreshCw className={loading ? 'size-4 animate-spin' : 'size-4'} /> Refresh
             </Button>
           )}

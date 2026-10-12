@@ -98,14 +98,14 @@ function ResourceTable({ resources = [], metrics = [], loading = false, fullPage
             <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" aria-hidden="true" />
             <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search id, type, tag" aria-label="Search resources" className="bg-transparent pl-9" />
           </div>
+          <Button variant="ghost" size="sm" className="ml-auto" onClick={() => setNewestFirst(!newestFirst)}>
+            <ArrowDownUp className="size-4" /> {newestFirst ? 'Newest first' : 'Oldest first'}
+          </Button>
           {['all', 'running', 'stopped'].map((s) => (
             <Button key={s} variant={stateFilter === s ? 'default' : 'ghost'} size="sm" onClick={() => setStateFilter(s)}>
               {s === 'all' ? 'All' : s[0].toUpperCase() + s.slice(1)} ({s === 'all' ? resources.length : states[s] || 0})
             </Button>
           ))}
-          <Button variant="ghost" size="sm" className="ml-auto" onClick={() => setNewestFirst(!newestFirst)}>
-            <ArrowDownUp className="size-4" /> {newestFirst ? 'Newest first' : 'Oldest first'}
-          </Button>
         </div>
 
         <Table>
