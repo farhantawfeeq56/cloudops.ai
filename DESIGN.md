@@ -23,8 +23,8 @@ colors:
   button-ink: "#202936"
 typography:
   ui:
-    fontFamily: "Schibsted Grotesk, system-ui, sans-serif"
-    reason: "A precise neo-grotesque close to the pinned reference's neutral UI voice, outside the default-reach list."
+    fontFamily: "Inter, system-ui, sans-serif"
+    reason: "A neutral UI grotesque with a tall x-height and clear numerals; chosen over the previous face for its even rhythm at 12-15px."
   data:
     fontFamily: "JetBrains Mono, ui-monospace, monospace"
     reason: "Strictly identifiers, costs and tabular data: the measurement face, never a costume."
@@ -98,7 +98,7 @@ reason beside it. Never a zero, never a guess.
 
 ## Typography
 
-**UI:** Schibsted Grotesk (self-hosted variable), metric-matched Arial fallback.
+**UI:** Inter (self-hosted variable), metric-matched Arial fallback.
 **Data:** JetBrains Mono (self-hosted variable), tabular figures, for instance
 IDs, costs, dates and table numerals.
 

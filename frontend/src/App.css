@@ -863,11 +863,12 @@ td.unmeasured { color: var(--muted); font-family: var(--font-mono); text-align: 
     inset: 0 auto 0 0;
     z-index: 6;
     transform: translateX(-100%);
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, visibility 0.2s;
     box-shadow: var(--shadow-toast);
     height: 100%;
+    visibility: hidden;
   }
-  .rail.is-open { transform: translateX(0); }
+  .rail.is-open { transform: translateX(0); visibility: visible; }
   .rail-close { display: inline-flex; }
   .menu-button { display: inline-flex; }
 
@@ -877,6 +878,7 @@ td.unmeasured { color: var(--muted); font-family: var(--font-mono); text-align: 
 
 @media (max-width: 560px) {
   .register { grid-template-columns: 1fr; }
+  .service-list .figure-row .figure-key { white-space: normal; overflow: visible; }
   .page-heading { flex-direction: column; align-items: flex-start; gap: 12px; }
   .heading-actions { width: 100%; justify-content: space-between; }
   .titleblock { padding: 0 16px; gap: 10px; }

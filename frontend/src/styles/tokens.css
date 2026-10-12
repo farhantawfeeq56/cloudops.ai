@@ -37,7 +37,7 @@
   --danger-line: #f5c6c0;
 
   /* ---- Fonts ---- */
-  --font-sans: 'Schibsted Grotesk', system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Liberation Sans', sans-serif;
+  --font-sans: 'Inter', system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Liberation Sans', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, 'Cascadia Mono', 'Liberation Mono', monospace;
 
   /* ---- Type scale ---- */
