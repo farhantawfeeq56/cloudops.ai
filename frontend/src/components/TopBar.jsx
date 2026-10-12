@@ -30,8 +30,8 @@ function AppHeader({ sampleMode = false }) {
       <Separator orientation="vertical" className="mr-1 !h-5" />
       <span className="font-semibold">CloudOps AI</span>
       <span className="text-muted-foreground hidden text-sm sm:inline">AWS Account</span>
+      <StatusPill tone={status.tone} title="Live connectivity to the CloudOps AI API (/health)">{status.label}</StatusPill>
       <div className="ml-auto flex items-center gap-2 md:gap-3">
-        <StatusPill tone={status.tone} title="Live connectivity to the CloudOps AI API (/health)">{status.label}</StatusPill>
         <span className="text-muted-foreground hidden text-sm sm:inline">Region <span className="text-foreground font-medium">—</span></span>
         <Button onClick={() => window.dispatchEvent(new CustomEvent('cloudops:scan'))}>Add a scan</Button>
       </div>

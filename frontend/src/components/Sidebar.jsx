@@ -12,7 +12,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar'
-import { Badge } from '@/components/ui/badge'
 
 const groups = [
   { label: 'Monitor', items: [['Overview', LayoutDashboard], ['Resources', Boxes], ['Cost Analysis', BarChart3], ['AI Insights', Bot]] },
@@ -59,7 +58,6 @@ function AppSidebar({ activePage, onNavigate }) {
       </SidebarContent>
 
       <SidebarFooter>
-        <Badge variant="outline" className="mx-2 h-5 w-fit border-transparent bg-warning-background text-warning group-data-[collapsible=icon]:hidden">Read-only review</Badge>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton isActive={activePage === 'Settings'} onClick={() => onNavigate('Settings')} tooltip="Settings">

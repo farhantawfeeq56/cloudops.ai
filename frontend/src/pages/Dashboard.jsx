@@ -248,7 +248,7 @@ function FindingsList({ findings = [] }) {
 // The review record for one Terraform plan. No plan is ever submitted from
 // here (read-only), so every field is an em dash with the reason beside it,
 // per the honesty rule.
-function IacSection({ heading = true }) {
+function IacSection() {
   const fields = [
     { label: 'Plan received', note: 'No plan submitted yet' },
     { label: 'Resources changed', note: 'Awaits a plan' },
@@ -258,9 +258,7 @@ function IacSection({ heading = true }) {
     { label: 'Review status', note: 'Awaits human review' },
   ]
   return (
-    <Panel
-      title={heading ? 'Infrastructure as Code review' : 'Review record'}
-    >
+    <Panel bordered={false}>
       <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
         {fields.map((field) => (
           <div className="flex flex-col gap-1" key={field.label}>
@@ -400,7 +398,7 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
       {activePage === 'IaC Review' && (
         <>
           <PageHeading title={TITLES['IaC Review']} intro={INTROS['IaC Review']} />
-          <IacSection heading={false} />
+          <IacSection />
           <Panel title="Plan analysis" description={<>Submit a plan with <span className="font-mono">POST /api/iac/analyze</span> to review proposed infrastructure changes.</>}>
             <PlotEmpty title="No plan submitted" description="A Terraform plan and Infracost output can be analyzed read-only. Nothing is applied, and the review record stays empty until a plan arrives." />
           </Panel>
