@@ -92,9 +92,6 @@ function ResourceTable({ resources = [], metrics = [], loading = false, fullPage
 
   return (
     <section className={fullPage ? 'flex-1' : ''}>
-      <div className="mb-4">
-        <h2 className="text-base font-semibold">Resources</h2>
-      </div>
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative min-w-[200px] flex-1 sm:max-w-xs">

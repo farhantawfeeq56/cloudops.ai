@@ -92,12 +92,15 @@ function PlotEmpty({ title, description, minHeight = 180 }) {
   )
 }
 
-function PageHeading({ title, intro, actions }) {
+function PageHeading({ title, intro, badge, actions }) {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
       <div className="space-y-1">
-        <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
-        <p className="text-muted-foreground text-sm">{intro}</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
+          {badge}
+        </div>
+        {intro && <p className="text-muted-foreground text-sm">{intro}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
@@ -342,13 +345,11 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
         <PageHeading
           title={TITLES.Overview}
           intro={INTROS.Overview}
+          badge={<DataStatus data={data} loading={loading} lastUpdated={lastUpdated} sampleMode={sampleMode} />}
           actions={(
-            <>
-              <DataStatus data={data} loading={loading} lastUpdated={lastUpdated} sampleMode={sampleMode} />
-              <Button variant="outline" onClick={reload} disabled={loading} title="Refresh backend data">
-                <RefreshCw className={loading ? 'size-4 animate-spin' : 'size-4'} /> Refresh
-              </Button>
-            </>
+            <Button variant="outline" onClick={reload} disabled={loading} title="Refresh backend data">
+              <RefreshCw className={loading ? 'size-4 animate-spin' : 'size-4'} /> Refresh
+            </Button>
           )}
         />
       )}
@@ -372,7 +373,7 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
 
       {activePage === 'Resources' && (
         <>
-          <PageHeading title={TITLES.Resources} intro={INTROS.Resources} actions={<DataStatus data={data} loading={loading} lastUpdated={lastUpdated} sampleMode={sampleMode} />} />
+          <PageHeading title={TITLES.Resources} intro={INTROS.Resources} badge={<DataStatus data={data} loading={loading} lastUpdated={lastUpdated} sampleMode={sampleMode} />} />
           <ResourceTable resources={resources} metrics={data.metrics?.metrics || []} loading={loading} fullPage />
         </>
       )}
@@ -381,9 +382,8 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
 
       {activePage === 'AI Insights' && (
         <>
-          <PageHeading title={TITLES['AI Insights']} intro={INTROS['AI Insights']} />
+          <PageHeading title={TITLES['AI Insights']} />
           <Panel
-            title="Findings review"
             description={data.insights?.explanation || 'Detection runs on deterministic rules; the explanation layer adds context and trade-offs.'}
             icon={<Bot className="text-muted-foreground size-5" strokeWidth={1.8} />}
           >
