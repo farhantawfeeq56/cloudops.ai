@@ -54,7 +54,21 @@ function DataStatus({ data, loading, lastUpdated, sampleMode = false }) {
   return <Badge variant="outline" className={`h-6 gap-1.5 rounded-full border-transparent px-2.5 ${tone}`}><i className="size-1.5 rounded-full bg-current" /> {label}</Badge>
 }
 
-function Panel({ title, description, icon, children, className = '' }) {
+function Panel({ title, description, icon, children, className = '', boxed = false }) {
+  if (boxed) {
+    return (
+      <section className={`border-border bg-card flex flex-col gap-4 rounded-2xl border p-6 ${className}`}>
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            {title && <h2 className="text-base font-semibold">{title}</h2>}
+            {description && <p className="text-muted-foreground text-sm">{description}</p>}
+          </div>
+          {icon}
+        </div>
+        {children}
+      </section>
+    )
+  }
   return (
     <section className={`border-border border-t pt-6 ${className}`}>
       <div className="mb-4 flex items-start justify-between gap-4">
@@ -100,6 +114,7 @@ function CostPanel({ costs, dailyCosts, forecast, loading, period = 'monthly' })
   ]
   return (
     <Panel
+      boxed
       title="Cost overview"
       description={<>{period === 'monthly' ? 'Cost Explorer, month to date' : 'Cost Explorer, rolling 30 days'}. <span className="font-mono">{range}</span></>}
       icon={<CircleDollarSign className="text-muted-foreground size-5" strokeWidth={1.8} />}
@@ -184,6 +199,7 @@ function FindingsPanel({ findings, loading, fullPage = false }) {
   const shown = fullPage ? findings : findings.slice(0, 5)
   return (
     <Panel
+      boxed
       title="Optimization findings"
       description="Rules detect, then explain. Every finding is read-only and waits for human review."
       icon={<AlertTriangle className="text-muted-foreground size-5" strokeWidth={1.8} />}
@@ -352,7 +368,7 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
             <RegisterCell label="Potential savings" value={savings > 0 ? formatCurrency(savings, data.costs?.currency) : DASH} unmeasured={!(savings > 0)} note="Only where a finding reports it" loading={loading} />
             <RegisterCell label="Active findings" value={data.insights?.total_findings == null ? DASH : String(data.insights.total_findings)} unmeasured={data.insights?.total_findings == null} note="Deterministic decision engine" loading={loading} />
           </section>
-          <div className="grid gap-6 xl:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-2">
             <CostPanel costs={data.costs} dailyCosts={data.dailyCosts} forecast={data.forecast} loading={loading} />
             <FindingsPanel findings={findings} loading={loading} />
           </div>
