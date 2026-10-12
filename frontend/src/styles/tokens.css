@@ -1,44 +1,45 @@
-/* CloudOps AI design tokens. The operations console world, pinned to the
-   beehiiv reference (see DIRECTION.md, DESIGN.md): white cards on a cool
-   near-white ground, one magenta-pink data accent, comfortable density. */
+/* CloudOps AI design tokens. The operations console world: soft sage surfaces
+   over a warm near-white ground, one deep-teal data accent, comfortable
+   density. Values mirror the shadcn theme in index.css — keep the two in step.
+   (see DESIGN.md) */
 
 :root {
   color-scheme: light;
 
   /* ---- Ground and surfaces ---- */
-  --ground: #f9fbfc;        /* page behind the cards */
-  --surface: #ffffff;       /* cards, sidebar, header */
+  --ground: #f4f6f1;        /* page behind the cards */
+  --surface: #fafbf8;       /* cards, header */
+  --surface-2: #e9eee7;     /* sidebar, secondary surface */
 
   /* ---- Ink ---- */
-  --ink: #141721;           /* headings and values */
-  --ink-2: #3d4351;         /* body copy */
-  --ink-3: #5c6470;         /* secondary text, table body */
-  --muted: #6b7280;         /* captions, notes, empty descriptors */
+  --ink: #171a18;           /* headings and values */
+  --ink-2: #535d57;         /* body copy */
+  --ink-3: #535d57;         /* secondary text, table body */
+  --text-muted: #626c65;    /* captions, notes, empty descriptors (AA on every surface) */
 
   /* ---- Lines ---- */
-  --line: #e9edf1;          /* card borders, hairlines */
-  --line-strong: #d8dee5;   /* control borders */
+  --line: #e0e5de;          /* card borders, hairlines */
+  --line-strong: #c8d0c9;   /* control borders */
 
-  /* ---- The one data accent (magenta-pink, sampled from the reference) ---- */
-  --accent: #dc589a;
-  --accent-strong: #b02368;
-  --accent-soft: #fcf2f8;
-  --accent-line: #f2c4dd;
+  /* ---- The one data accent (intelligence green) ---- */
+  --brand: #52796f;
+  --brand-strong: #354f52;
+  --brand-soft: #dce5dc;    /* selected surface */
+  --brand-line: #cad2c5;
 
   /* ---- Status ---- */
-  --ok: #0a7a47;            /* connected, running, reported savings (4.8:1 on ok-soft) */
-  --ok-soft: #e7f6ee;
-  --ok-line: #b9e4cc;
-  --warn: #b54708;
-  --warn-soft: #fdf3e4;
-  --warn-line: #f0d9b5;
+  --ok: #247346;            /* connected, running, reported savings */
+  --ok-soft: #e6f4ea;
+  --ok-line: #b7dfc4;
+  --warn: #956000;
+  --warn-soft: #fff3d6;
+  --warn-line: #f0dca8;
   --danger: #b42318;
-  --danger-soft: #fdecea;
-  --danger-line: #f5c6c0;
+  --danger-soft: #fce8e8;
+  --danger-line: #f3c6c6;
 
   /* ---- Fonts ---- */
-  --font-sans: 'Inter', system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Liberation Sans', sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, 'Cascadia Mono', 'Liberation Mono', monospace;
+  --font-mono: 'JetBrains Mono', 'JetBrains Mono Fallback', ui-monospace, 'SF Mono', Menlo, Consolas, 'Cascadia Mono', 'Liberation Mono', monospace;
 
   /* ---- Type scale ---- */
   --t-page: 28px;           /* the sheet title */
@@ -69,8 +70,8 @@
   --r-pill: 999px;
 
   /* ---- Elevation: flat cards, one float ---- */
-  --shadow-card: 0 1px 2px rgba(20, 23, 33, 0.05);
-  --shadow-toast: 0 10px 30px rgba(20, 23, 33, 0.16);
+  --shadow-card: 0 1px 2px rgba(47, 62, 70, 0.05);
+  --shadow-toast: 0 10px 30px rgba(47, 62, 70, 0.16);
 
   /* ---- Layout ---- */
   --rail: 248px;

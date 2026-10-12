@@ -10,7 +10,7 @@ import { sample } from '../services/sampleData'
 const DASH = '—'
 const formatCurrency = (value, currency = 'USD') => typeof value === 'number' ? new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(value) : DASH
 const getPayload = (result) => result.status === 'fulfilled' ? result.value.data : null
-const isSampleMode = () => new URLSearchParams(window.location.search).get('sample') === '1'
+const isSampleMode = () => new URLSearchParams(window.location.search).get('sample') !== '0'
 
 function useDashboardData() {
   const [data, setData] = useState({ overview: null, resources: null, metrics: null, costs: null, insights: null, dailyCosts: null, forecast: null })
@@ -37,7 +37,7 @@ function useDashboardData() {
 }
 
 function DataStatus({ data, loading, lastUpdated, sampleMode = false }) {
-  if (sampleMode) return <span className="data-badge"><i className="dot" style={{ background: 'var(--accent)' }} /> Sample measurements</span>
+  if (sampleMode) return <span className="data-badge"><i className="dot" style={{ background: 'var(--brand)' }} /> Sample measurements</span>
   const connected = Object.values(data).some((item) => item?.status === 'ok' || item?.status === 'healthy')
   const state = loading ? 'loading' : connected ? 'live' : 'offline'
   const label = { loading: 'Loading measurements', live: `Live data${lastUpdated ? ` · ${lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}`, offline: 'Backend data unavailable' }[state]
@@ -261,7 +261,7 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
     <main className="dashboard-content">
       {sampleMode && (
         <div className="sample-banner" role="status">
-          <p><strong>Sample data.</strong> Measurements on this sheet come from a local fixture, not from AWS. <button type="button" className="btn btn--text" onClick={() => { const url = new URL(window.location.href); url.searchParams.delete('sample'); window.location.replace(url.toString()) }}>Load live data</button></p>
+          <p><strong>Sample data.</strong> Measurements on this sheet come from a local fixture, not from AWS. <button type="button" className="btn btn--text" onClick={() => { const url = new URL(window.location.href); url.searchParams.set('sample', '0'); window.location.replace(url.toString()) }}>Load live data</button></p>
         </div>
       )}
 
@@ -399,7 +399,7 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
             <dl>
               <div><dt>API base URL</dt><dd>{import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'}</dd></div>
               <div><dt>Infrastructure actions</dt><dd>Read-only. Terraform apply is not exposed.</dd></div>
-              <div><dt>Sample mode</dt><dd>Append <span style={{ color: 'var(--ink)' }}>?sample=1</span> to the URL to load demonstration measurements.</dd></div>
+              <div><dt>Sample mode</dt><dd>On by default, from <span className="mono">src/services/sampleData.js</span>. Append <span style={{ color: 'var(--ink)' }}>?sample=0</span> to the URL to reach a live backend instead.</dd></div>
             </dl>
           </section>
         </>

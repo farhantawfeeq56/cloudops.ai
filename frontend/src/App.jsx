@@ -10,7 +10,9 @@ function App() {
   const [activePage, setActivePage] = useState('Overview')
   const [railOpen, setRailOpen] = useState(false)
   const [scanRequested, setScanRequested] = useState(false)
-  const [sampleMode] = useState(() => new URLSearchParams(window.location.search).get('sample') === '1')
+  // Sample measurements are the default so the console is reviewable without
+  // AWS credentials; ?sample=0 opts back into the live backend.
+  const [sampleMode] = useState(() => new URLSearchParams(window.location.search).get('sample') !== '0')
 
   const navigate = (page) => { setActivePage(page); setRailOpen(false) }
 

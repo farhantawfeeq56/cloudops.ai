@@ -55,26 +55,26 @@ export default function ChartBoard({ series = [], currency = 'USD', caption, not
           <AreaChart data={data} margin={{ top: 8, right: 10, bottom: 0, left: 2 }}>
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.22} />
-                <stop offset="100%" stopColor="var(--accent)" stopOpacity={0.02} />
+                <stop offset="0%" stopColor="var(--brand)" stopOpacity={0.22} />
+                <stop offset="100%" stopColor="var(--brand)" stopOpacity={0.02} />
               </linearGradient>
             </defs>
             <CartesianGrid vertical={false} stroke="var(--line)" />
             <XAxis
               dataKey="label"
-              tick={{ fill: 'var(--muted)', fontSize: 11, fontFamily: 'var(--font-mono)' }}
+              tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'var(--font-mono)' }}
               axisLine={{ stroke: 'var(--line)' }}
               tickLine={false}
             />
             <YAxis
               tickFormatter={(v) => compact(v, currency)}
-              tick={{ fill: 'var(--muted)', fontSize: 11, fontFamily: 'var(--font-mono)' }}
+              tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'var(--font-mono)' }}
               axisLine={false}
               tickLine={false}
               width={48}
             />
             <Tooltip
-              cursor={{ stroke: 'var(--accent-line)' }}
+              cursor={{ stroke: 'var(--brand-line)' }}
               content={({ active, payload }) => (active && payload?.length ? (
                 <div className="chart-tip">
                   {payload[0].payload.label_full || payload[0].payload.label}
@@ -85,14 +85,14 @@ export default function ChartBoard({ series = [], currency = 'USD', caption, not
             <Area
               type="step"
               dataKey="value"
-              stroke="var(--accent)"
+              stroke="var(--brand)"
               strokeWidth={2}
               fill={`url(#${gradientId})`}
               isAnimationActive={animate}
               animationDuration={900}
               animationEasing="ease-out"
               dot={false}
-              activeDot={{ r: 4, fill: 'var(--surface)', stroke: 'var(--accent)', strokeWidth: 2 }}
+              activeDot={{ r: 4, fill: 'var(--surface)', stroke: 'var(--brand)', strokeWidth: 2 }}
             />
           </AreaChart>
         </ResponsiveContainer>
