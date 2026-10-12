@@ -6,7 +6,6 @@ import RegisterCell from '../components/RegisterCell'
 import ResourceTable from '../components/ResourceTable'
 import { getCostForecast, getCosts, getEc2Metrics, getEc2Resources, getInsights, getOverview } from '../services/api'
 import { sample } from '../services/sampleData'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -42,11 +41,7 @@ function useDashboardData() {
 }
 
 function DataStatus({ data, loading, lastUpdated, sampleMode = false }) {
-  if (sampleMode) return (
-    <Badge variant="outline" className="bg-info-background text-info h-6 gap-1.5 rounded-full border-transparent px-2.5">
-      <i className="size-1.5 rounded-full bg-current" /> Sample measurements
-    </Badge>
-  )
+  if (sampleMode) return null
   const connected = Object.values(data).some((item) => item?.status === 'ok' || item?.status === 'healthy')
   const state = loading ? 'loading' : connected ? 'live' : 'offline'
   const label = { loading: 'Loading measurements', live: `Live data${lastUpdated ? ` · ${lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}`, offline: 'Backend data unavailable' }[state]
@@ -328,21 +323,6 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
 
   return (
     <div className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8">
-      {sampleMode && (
-        <Alert className="text-warning border-transparent bg-warning-background">
-          <AlertDescription className="text-warning">
-            <strong>Sample data.</strong> Measurements on this sheet come from a local fixture, not from AWS.{' '}
-            <button
-              type="button"
-              className="font-medium underline underline-offset-4 hover:no-underline"
-              onClick={() => { const url = new URL(window.location.href); url.searchParams.set('sample', '0'); window.location.replace(url.toString()) }}
-            >
-              Load live data
-            </button>
-          </AlertDescription>
-        </Alert>
-      )}
-
       {activePage === 'Overview' && (
         <PageHeading
           title={TITLES.Overview}
