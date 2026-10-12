@@ -347,8 +347,8 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
           intro={INTROS.Overview}
           badge={<DataStatus data={data} loading={loading} lastUpdated={lastUpdated} sampleMode={sampleMode} />}
           actions={(
-            <Button variant="ghost" size="sm" onClick={reload} disabled={loading} title="Refresh backend data">
-              <RefreshCw className={loading ? 'size-4 animate-spin' : 'size-4'} /> Refresh
+            <Button variant="secondary" size="sm" className="text-xs" onClick={reload} disabled={loading} title="Refresh backend data">
+              <RefreshCw className={loading ? 'size-3.5 animate-spin' : 'size-3.5'} /> Refresh
             </Button>
           )}
         />
