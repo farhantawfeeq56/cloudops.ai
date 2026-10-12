@@ -6,6 +6,12 @@ import RegisterCell from '../components/RegisterCell'
 import ResourceTable from '../components/ResourceTable'
 import { getCostForecast, getCosts, getEc2Metrics, getEc2Resources, getInsights, getOverview } from '../services/api'
 import { sample } from '../services/sampleData'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const DASH = '—'
 const formatCurrency = (value, currency = 'USD') => typeof value === 'number' ? new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(value) : DASH
@@ -37,31 +43,68 @@ function useDashboardData() {
 }
 
 function DataStatus({ data, loading, lastUpdated, sampleMode = false }) {
-  if (sampleMode) return <span className="data-badge"><i className="dot" style={{ background: 'var(--brand)' }} /> Sample measurements</span>
+  if (sampleMode) return (
+    <Badge variant="outline" className="bg-info-background text-info h-6 gap-1.5 rounded-full border-transparent px-2.5">
+      <i className="size-1.5 rounded-full bg-current" /> Sample measurements
+    </Badge>
+  )
   const connected = Object.values(data).some((item) => item?.status === 'ok' || item?.status === 'healthy')
   const state = loading ? 'loading' : connected ? 'live' : 'offline'
   const label = { loading: 'Loading measurements', live: `Live data${lastUpdated ? ` · ${lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}`, offline: 'Backend data unavailable' }[state]
-  return <span className={`data-badge ${state === 'live' ? 'is-live' : state === 'offline' ? 'is-offline' : ''}`}><i className="dot" style={{ background: 'currentColor' }} /> {label}</span>
+  const tone = state === 'live' ? 'bg-success-background text-success' : state === 'offline' ? 'bg-warning-background text-warning' : 'bg-muted text-muted-foreground'
+  return <Badge variant="outline" className={`h-6 gap-1.5 rounded-full border-transparent px-2.5 ${tone}`}><i className="size-1.5 rounded-full bg-current" /> {label}</Badge>
+}
+
+function Panel({ title, description, icon, children, className = '' }) {
+  return (
+    <Card className={`gap-4 ${className}`}>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        {description && <CardDescription>{description}</CardDescription>}
+        {icon && <CardAction>{icon}</CardAction>}
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </Card>
+  )
+}
+
+function PlotEmpty({ title, description, minHeight = 180 }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-1 px-6 py-8 text-center" style={{ minHeight }}>
+      <strong className="text-sm font-medium">{title}</strong>
+      <p className="text-muted-foreground max-w-[46ch] text-sm leading-relaxed">{description}</p>
+    </div>
+  )
+}
+
+function PageHeading({ title, intro, actions }) {
+  return (
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+        <p className="text-muted-foreground text-sm">{intro}</p>
+      </div>
+      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+    </div>
+  )
 }
 
 function CostPanel({ costs, dailyCosts, forecast, loading, period = 'monthly' }) {
   const services = costs?.services || []
   const unavailable = costs?.status === 'unavailable' || !costs
   const range = costs?.start && costs?.end_inclusive ? `${costs.start} → ${costs.end_inclusive}` : period === 'monthly' ? 'Current billing period' : 'Rolling 30 days'
+  const figures = [
+    ...services.slice(0, 6).map((item) => [item.service, formatCurrency(item.cost, costs.currency)]),
+    ...(period === 'monthly' ? [['Last 30 days', formatCurrency(dailyCosts?.total_cost, dailyCosts?.currency)], ['Month-end forecast (AWS)', forecast?.available ? formatCurrency(forecast.mean, forecast.currency) : DASH]] : []),
+  ]
   return (
-    <section className="panel">
-      <div className="panel-heading">
-        <div>
-          <h2>Cost overview</h2>
-          <p>{period === 'monthly' ? 'Cost Explorer, month to date' : 'Cost Explorer, rolling 30 days'}. <span className="mono">{range}</span></p>
-        </div>
-        <CircleDollarSign className="panel-icon" size={18} strokeWidth={1.8} />
-      </div>
+    <Panel
+      title="Cost overview"
+      description={<>{period === 'monthly' ? 'Cost Explorer, month to date' : 'Cost Explorer, rolling 30 days'}. <span className="font-mono">{range}</span></>}
+      icon={<CircleDollarSign className="text-muted-foreground size-5" strokeWidth={1.8} />}
+    >
       {loading ? <EmptyState loading title="Loading cost data" /> : unavailable ? (
-        <div className="plot-empty">
-          <strong>No measurements recorded</strong>
-          <p>Cost Explorer data requires valid AWS access and permissions. The figure stays empty until it can be measured.</p>
-        </div>
+        <PlotEmpty title="No measurements recorded" description="Cost Explorer data requires valid AWS access and permissions. The figure stays empty until it can be measured." />
       ) : services.length ? (
         <>
           <ChartBoard
@@ -70,55 +113,68 @@ function CostPanel({ costs, dailyCosts, forecast, loading, period = 'monthly' })
             caption={`Cost by service · ${costs.currency || 'USD'}`}
             note={`${services.length} services measured`}
           />
-          <dl className="service-list">
-            {services.slice(0, 6).map((item) => <div className="figure-row" key={item.service}><dt className="figure-key">{item.service}</dt><dd className="figure-value">{formatCurrency(item.cost, costs.currency)}</dd></div>)}
-            {period === 'monthly' && <div className="figure-row"><dt className="figure-key">Last 30 days</dt><dd className="figure-value">{formatCurrency(dailyCosts?.total_cost, dailyCosts?.currency)}</dd></div>}
-            {period === 'monthly' && <div className="figure-row"><dt className="figure-key">Month-end forecast (AWS)</dt><dd className="figure-value">{forecast?.available ? formatCurrency(forecast.mean, forecast.currency) : DASH}</dd></div>}
+          <dl className="divide-border mt-4 flex flex-col divide-y">
+            {figures.map(([key, value]) => (
+              <div className="flex items-baseline justify-between gap-3 py-2.5 text-sm" key={key}>
+                <dt className="text-muted-foreground min-w-0 truncate">{key}</dt>
+                <dd className="font-mono font-semibold tabular-nums whitespace-nowrap">{value}</dd>
+              </div>
+            ))}
           </dl>
         </>
       ) : (
-        <div className="plot-empty">
-          <strong>No measurements recorded</strong>
-          <p>Cost Explorer returned no grouped services for this period.</p>
-        </div>
+        <PlotEmpty title="No measurements recorded" description="Cost Explorer returned no grouped services for this period." />
       )}
-    </section>
+    </Panel>
   )
 }
 
-const SEVERITY_CHIP = { high: 'chip--red', medium: 'chip--warn', low: '' }
+const SEVERITY_TEXT = { high: 'text-destructive', medium: 'text-warning', low: 'text-muted-foreground' }
 const SEVERITY_WORD = { high: 'High', medium: 'Medium', low: 'Low' }
 
 function FindingRow({ finding, expanded, onToggle }) {
   const severity = finding.severity || 'unclassified'
   const savings = finding.estimated_monthly_savings
+  const spec = [
+    ['Action', finding.recommendation || DASH],
+    ['Monthly saving', typeof savings === 'number' && savings > 0 ? formatCurrency(savings) : DASH],
+    ['Resource', `${finding.resource_id || DASH}${finding.resource_type ? ` · ${finding.resource_type}` : ''}`],
+  ]
   return (
-    <>
-      <div className="finding-row">
-        <span className={`severity-dot ${severity}`} aria-hidden="true" />
-        <div className="finding-body">
-          <span className="finding-title">{finding.issue || 'Finding'}<span className={`chip ${SEVERITY_CHIP[severity] || ''}`}>{SEVERITY_WORD[severity] || severity}</span></span>
-          <span className="finding-resource">{finding.resource_id || 'Resource unavailable'}</span>
+    <div className="border-border border-b last:border-b-0">
+      <div className="flex items-start gap-3 py-3">
+        <span className={`mt-1.5 size-2 shrink-0 rounded-full ${severity === 'high' ? 'bg-destructive' : severity === 'medium' ? 'bg-warning' : 'bg-muted-foreground'}`} aria-hidden="true" />
+        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <span className="flex min-w-0 flex-wrap items-center gap-2 text-sm font-medium break-words">
+            {finding.issue || 'Finding'}
+            <span className={`text-xs font-semibold ${SEVERITY_TEXT[severity] || SEVERITY_TEXT.low}`}>{SEVERITY_WORD[severity] || severity}</span>
+          </span>
+          <span className="text-muted-foreground font-mono text-xs">{finding.resource_id || 'Resource unavailable'}</span>
         </div>
-        <span className="finding-saving" title={savings > 0 ? 'Estimated monthly saving reported by the finding' : 'No saving reported'}>
+        <span className="font-mono text-sm font-semibold tabular-nums" title={savings > 0 ? 'Estimated monthly saving reported by the finding' : 'No saving reported'}>
           {typeof savings === 'number' && savings > 0 ? formatCurrency(savings) : DASH}
         </span>
-        <button type="button" className="btn btn--ghost" aria-expanded={expanded} onClick={onToggle}>{expanded ? 'Hide' : 'Review'}</button>
+        <Button variant="link" size="sm" className="h-auto p-0" aria-expanded={expanded} onClick={onToggle}>{expanded ? 'Hide' : 'Review'}</Button>
       </div>
       {expanded && (
-        <div className="finding-row finding-detail">
-          <span />
-          <div style={{ flex: 1 }}>
-            <dl className="redline-spec">
-              <div><dt>Action</dt><dd>{finding.recommendation || DASH}</dd></div>
-              <div><dt>Evidence</dt><dd><ul>{(finding.evidence || []).map((line, i) => <li key={i}>{line}</li>)}</ul></dd></div>
-              <div><dt>Monthly saving</dt><dd className="mono">{typeof savings === 'number' && savings > 0 ? formatCurrency(savings) : DASH}</dd></div>
-              <div><dt>Resource</dt><dd className="mono">{finding.resource_id || DASH}{finding.resource_type ? ` · ${finding.resource_type}` : ''}</dd></div>
-            </dl>
-          </div>
+        <div className="pb-4 pl-5">
+          <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+            {spec.map(([key, val], i) => (
+              <div key={key} className="grid grid-cols-[120px_1fr] gap-3">
+                <dt className="text-muted-foreground text-xs font-medium">{key}</dt>
+                <dd className={`text-sm ${i > 0 ? 'font-mono tabular-nums' : ''}`}>{val}</dd>
+              </div>
+            ))}
+            {finding.evidence?.length ? (
+              <div className="grid grid-cols-[120px_1fr] gap-3 sm:col-span-2">
+                <dt className="text-muted-foreground text-xs font-medium">Evidence</dt>
+                <dd className="text-sm"><ul className="list-disc space-y-0.5 pl-4">{finding.evidence.map((line, i) => <li key={i}>{line}</li>)}</ul></dd>
+              </div>
+            ) : null}
+          </dl>
         </div>
       )}
-    </>
+    </div>
   )
 }
 
@@ -126,33 +182,31 @@ function FindingsPanel({ findings, loading, fullPage = false }) {
   const [openKey, setOpenKey] = useState(null)
   const shown = fullPage ? findings : findings.slice(0, 5)
   return (
-    <section className="panel">
-      <div className="panel-heading">
-        <div>
-          <h2>Optimization findings</h2>
-          <p>Rules detect, then explain. Every finding is read-only and waits for human review.</p>
-        </div>
-        <AlertTriangle className="panel-icon" size={18} strokeWidth={1.8} />
-      </div>
+    <Panel
+      title="Optimization findings"
+      description="Rules detect, then explain. Every finding is read-only and waits for human review."
+      icon={<AlertTriangle className="text-muted-foreground size-5" strokeWidth={1.8} />}
+    >
       {loading ? <EmptyState loading title="Loading findings" /> : !findings.length ? (
-        <div className="plot-empty" style={{ minHeight: 180 }}>
-          <strong>No findings recorded</strong>
-          <p>Findings appear when the decision engine identifies a review opportunity in the measured resource state.</p>
-        </div>
+        <PlotEmpty title="No findings recorded" description="Findings appear when the decision engine identifies a review opportunity in the measured resource state." />
       ) : (
         <>
-          <div className="findings-list">
+          <div className="flex flex-col">
             {shown.map((finding, index) => {
               const key = `${finding.resource_id}-${finding.issue}-${index}`
-              return <FindingRow key={key} finding={finding} index={index} expanded={openKey === key} onToggle={() => setOpenKey(openKey === key ? null : key)} />
+              return <FindingRow key={key} finding={finding} expanded={openKey === key} onToggle={() => setOpenKey(openKey === key ? null : key)} />
             })}
           </div>
           {!fullPage && findings.length > shown.length && (
-            <div className="findings-foot"><button type="button" className="btn btn--text" onClick={() => window.dispatchEvent(new CustomEvent('cloudops:navigate', { detail: 'AI Insights' }))}>Open AI Insights for all {findings.length} findings</button></div>
+            <div className="border-border mt-1 border-t pt-3">
+              <Button variant="link" className="h-auto p-0" onClick={() => window.dispatchEvent(new CustomEvent('cloudops:navigate', { detail: 'AI Insights' }))}>
+                Open AI Insights for all {findings.length} findings
+              </Button>
+            </div>
           )}
         </>
       )}
-    </section>
+    </Panel>
   )
 }
 
@@ -162,10 +216,10 @@ function FindingsPanel({ findings, loading, fullPage = false }) {
 function FindingsList({ findings = [] }) {
   const [openKey, setOpenKey] = useState(null)
   return (
-    <div className="findings-list">
+    <div className="flex flex-col">
       {findings.map((finding, index) => {
         const key = `${finding.resource_id}-${finding.issue}-${index}`
-        return <FindingRow key={key} finding={finding} index={index} expanded={openKey === key} onToggle={() => setOpenKey(openKey === key ? null : key)} />
+        return <FindingRow key={key} finding={finding} expanded={openKey === key} onToggle={() => setOpenKey(openKey === key ? null : key)} />
       })}
     </div>
   )
@@ -184,24 +238,22 @@ function IacSection({ heading = true }) {
     { label: 'Review status', note: 'Awaits human review' },
   ]
   return (
-    <section className="section-block">
-      <div className="section-heading">
-        {heading
-          ? <div><h2>Infrastructure as Code review</h2><p>Every proposed change moves through cost analysis and human review. CloudOps AI never applies changes automatically.</p></div>
-          : <p>Every proposed change moves through cost analysis and human review. CloudOps AI never applies changes automatically.</p>}
-      </div>
-      <dl className="iac-record">
+    <Panel
+      title={heading ? 'Infrastructure as Code review' : 'Review record'}
+      description="Every proposed change moves through cost analysis and human review. CloudOps AI never applies changes automatically."
+    >
+      <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
         {fields.map((field) => (
-          <div className="iac-record-row" key={field.label}>
-            <dt>{field.label}</dt>
-            <dd>
-              <span className="iac-record-value">{DASH}</span>
-              <span className="iac-record-note">{field.note}</span>
+          <div className="flex flex-col gap-1" key={field.label}>
+            <dt className="text-muted-foreground text-xs font-medium">{field.label}</dt>
+            <dd className="flex items-baseline gap-2">
+              <span className="font-mono text-sm font-semibold tabular-nums">{DASH}</span>
+              <span className="text-muted-foreground text-xs">{field.note}</span>
             </dd>
           </div>
         ))}
       </dl>
-    </section>
+    </Panel>
   )
 }
 
@@ -230,22 +282,26 @@ function CostAnalysis({ data, loading }) {
   const costs = period === 'monthly' ? data.costs : data.dailyCosts
   return (
     <>
-      <div className="page-heading" style={{ marginBottom: 20 }}>
-        <div>
-          <h1>{TITLES['Cost Analysis']}</h1>
-          <p>{INTROS['Cost Analysis']}</p>
-        </div>
-        <div className="tabs" role="tablist" aria-label="Cost period">
-          <button type="button" role="tab" aria-selected={period === 'monthly'} className={`tab ${period === 'monthly' ? 'active' : ''}`} onClick={() => setPeriod('monthly')}>Month to date</button>
-          <button type="button" role="tab" aria-selected={period === 'daily'} className={`tab ${period === 'daily' ? 'active' : ''}`} onClick={() => setPeriod('daily')}>Last 30 days</button>
-        </div>
-      </div>
-      <section className="register" aria-label="Cost register">
+      <PageHeading
+        title={TITLES['Cost Analysis']}
+        intro={INTROS['Cost Analysis']}
+        actions={(
+          <Tabs value={period} onValueChange={setPeriod}>
+            <TabsList>
+              <TabsTrigger value="monthly">Month to date</TabsTrigger>
+              <TabsTrigger value="daily">Last 30 days</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        )}
+      />
+      <Card aria-label="Cost register">
+        <CardContent className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <RegisterCell label="Period total" value={formatCurrency(costs?.total_cost, costs?.currency)} unmeasured={costs?.total_cost == null} note={costs?.start && costs?.end_inclusive ? `${costs.start} → ${costs.end_inclusive}` : 'Cost Explorer'} loading={loading} />
         <RegisterCell label="Services measured" value={costs?.services?.length == null ? DASH : String(costs.services.length)} unmeasured={!costs?.services?.length} note="Grouped by AWS service" loading={loading} />
         <RegisterCell label="Largest service" value={costs?.services?.[0] ? formatCurrency(costs.services[0].cost, costs.currency) : DASH} unmeasured={!costs?.services?.[0]} note={costs?.services?.[0]?.service || 'No service costs returned'} loading={loading} />
         <RegisterCell label="Month-end forecast" value={data.forecast?.available ? formatCurrency(data.forecast.mean, data.forecast.currency) : DASH} unmeasured={!data.forecast?.available} note="AWS GetCostForecast" loading={loading} />
-      </section>
+        </CardContent>
+      </Card>
       <CostPanel costs={costs} dailyCosts={data.dailyCosts} forecast={data.forecast} loading={loading} period={period} />
     </>
   )
@@ -258,59 +314,59 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
   const savings = findings.reduce((total, finding) => total + (typeof finding.estimated_monthly_savings === 'number' ? finding.estimated_monthly_savings : 0), 0)
 
   return (
-    <main className="dashboard-content">
+    <div className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8">
       {sampleMode && (
-        <div className="sample-banner" role="status">
-          <p><strong>Sample data.</strong> Measurements on this sheet come from a local fixture, not from AWS. <button type="button" className="btn btn--text" onClick={() => { const url = new URL(window.location.href); url.searchParams.set('sample', '0'); window.location.replace(url.toString()) }}>Load live data</button></p>
-        </div>
+        <Alert className="text-warning border-transparent bg-warning-background">
+          <AlertDescription className="text-warning">
+            <strong>Sample data.</strong> Measurements on this sheet come from a local fixture, not from AWS.{' '}
+            <button
+              type="button"
+              className="font-medium underline underline-offset-4 hover:no-underline"
+              onClick={() => { const url = new URL(window.location.href); url.searchParams.set('sample', '0'); window.location.replace(url.toString()) }}
+            >
+              Load live data
+            </button>
+          </AlertDescription>
+        </Alert>
       )}
 
       {(activePage === 'Overview' || activePage === 'Cost Analysis') && (
-        <div className="page-heading">
-          <div>
-            <h1>{TITLES[activePage]}</h1>
-            <p>{INTROS[activePage]}</p>
-          </div>
-          {activePage === 'Overview' && (
-            <div className="heading-actions">
+        <PageHeading
+          title={TITLES[activePage]}
+          intro={INTROS[activePage]}
+          actions={activePage === 'Overview' ? (
+            <>
               <DataStatus data={data} loading={loading} lastUpdated={lastUpdated} sampleMode={sampleMode} />
-              <button className="btn btn--secondary" onClick={reload} disabled={loading} title="Refresh backend data"><RefreshCw size={14} className={loading ? 'spin' : ''} /> Refresh</button>
-            </div>
-          )}
-        </div>
+              <Button variant="outline" onClick={reload} disabled={loading} title="Refresh backend data">
+                <RefreshCw className={loading ? 'size-4 animate-spin' : 'size-4'} /> Refresh
+              </Button>
+            </>
+          ) : null}
+        />
       )}
 
       {activePage === 'Overview' && (
         <>
-          <section className="register" aria-label="Measurement register">
+          <Card aria-label="Measurement register">
+          <CardContent className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <RegisterCell label="Monthly cloud cost" value={formatCurrency(data.costs?.total_cost, data.costs?.currency)} unmeasured={data.costs?.total_cost == null} note="Cost Explorer, month to date" loading={loading} />
             <RegisterCell label="Resources" value={data.resources?.total_instances == null ? DASH : String(data.resources.total_instances)} unmeasured={data.resources?.total_instances == null} note="EC2 instances discovered" loading={loading} />
             <RegisterCell label="Potential savings" value={savings > 0 ? formatCurrency(savings, data.costs?.currency) : DASH} unmeasured={!(savings > 0)} note="Only where a finding reports it" loading={loading} />
             <RegisterCell label="Active findings" value={data.insights?.total_findings == null ? DASH : String(data.insights.total_findings)} unmeasured={data.insights?.total_findings == null} note="Deterministic decision engine" loading={loading} />
-          </section>
-          <div className="two-column">
+          </CardContent>
+        </Card>
+          <div className="grid gap-6 xl:grid-cols-2">
             <CostPanel costs={data.costs} dailyCosts={data.dailyCosts} forecast={data.forecast} loading={loading} />
             <FindingsPanel findings={findings} loading={loading} />
           </div>
-          <section className="section-block">
-            <div className="section-heading">
-              <div>
-                <h2>Resource summary</h2>
-                <p>The inventory the findings above refer to.</p>
-              </div>
-            </div>
-            <ResourceTable resources={resources} metrics={data.metrics?.metrics || []} loading={loading} />
-          </section>
+          <ResourceTable resources={resources} metrics={data.metrics?.metrics || []} loading={loading} />
           <IacSection />
         </>
       )}
 
       {activePage === 'Resources' && (
         <>
-          <div className="page-heading">
-            <div><h1>{TITLES.Resources}</h1><p>{INTROS.Resources}</p></div>
-            <div className="heading-actions"><DataStatus data={data} loading={loading} lastUpdated={lastUpdated} sampleMode={sampleMode} /></div>
-          </div>
+          <PageHeading title={TITLES.Resources} intro={INTROS.Resources} actions={<DataStatus data={data} loading={loading} lastUpdated={lastUpdated} sampleMode={sampleMode} />} />
           <ResourceTable resources={resources} metrics={data.metrics?.metrics || []} loading={loading} fullPage />
         </>
       )}
@@ -319,92 +375,78 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
 
       {activePage === 'AI Insights' && (
         <>
-          <div className="page-heading">
-            <div><h1>{TITLES['AI Insights']}</h1><p>{INTROS['AI Insights']}</p></div>
-          </div>
-          <section className="panel">
-            <div className="panel-heading">
-              <div>
-                <h2>Findings review</h2>
-                <p>{data.insights?.explanation || 'Detection runs on deterministic rules; the explanation layer adds context and trade-offs.'}</p>
-              </div>
-              <Bot className="panel-icon" size={18} strokeWidth={1.8} />
-            </div>
+          <PageHeading title={TITLES['AI Insights']} intro={INTROS['AI Insights']} />
+          <Panel
+            title="Findings review"
+            description={data.insights?.explanation || 'Detection runs on deterministic rules; the explanation layer adds context and trade-offs.'}
+            icon={<Bot className="text-muted-foreground size-5" strokeWidth={1.8} />}
+          >
             {loading ? <EmptyState loading title="Loading findings" /> : !findings.length ? (
-              <div className="plot-empty" style={{ minHeight: 180 }}>
-                <strong>No findings recorded</strong>
-                <p>Findings appear when the decision engine identifies a review opportunity in the measured resource state.</p>
-              </div>
+              <PlotEmpty title="No findings recorded" description="Findings appear when the decision engine identifies a review opportunity in the measured resource state." />
             ) : (
               <FindingsList findings={findings} />
             )}
-          </section>
+          </Panel>
         </>
       )}
 
       {activePage === 'IaC Review' && (
         <>
-          <div className="page-heading">
-            <div><h1>{TITLES['IaC Review']}</h1><p>{INTROS['IaC Review']}</p></div>
-          </div>
+          <PageHeading title={TITLES['IaC Review']} intro={INTROS['IaC Review']} />
           <IacSection heading={false} />
-          <section className="panel">
-            <div className="panel-heading">
-              <div>
-                <h2>Plan analysis</h2>
-                <p>Submit a plan with <span className="mono">POST /api/iac/analyze</span> to review proposed infrastructure changes.</p>
-              </div>
-            </div>
-            <div className="plot-empty" style={{ minHeight: 180 }}>
-              <strong>No plan submitted</strong>
-              <p>A Terraform plan and Infracost output can be analyzed read-only. Nothing is applied, and the review record stays empty until a plan arrives.</p>
-            </div>
-          </section>
+          <Panel title="Plan analysis" description={<>Submit a plan with <span className="font-mono">POST /api/iac/analyze</span> to review proposed infrastructure changes.</>}>
+            <PlotEmpty title="No plan submitted" description="A Terraform plan and Infracost output can be analyzed read-only. Nothing is applied, and the review record stays empty until a plan arrives." />
+          </Panel>
         </>
       )}
 
       {activePage === 'Governance' && (
         <>
-          <div className="page-heading">
-            <div><h1>{TITLES.Governance}</h1><p>{INTROS.Governance}</p></div>
-          </div>
-          <section className="panel">
-            <div className="panel-heading">
-              <div><h2>Governance signals</h2><p>Findings the analysis tags as policy or ownership issues.</p></div>
-              <Tags className="panel-icon" size={18} strokeWidth={1.8} />
-            </div>
+          <PageHeading title={TITLES.Governance} intro={INTROS.Governance} />
+          <Panel
+            title="Governance signals"
+            description="Findings the analysis tags as policy or ownership issues."
+            icon={<Tags className="text-muted-foreground size-5" strokeWidth={1.8} />}
+          >
             {loading ? <EmptyState loading title="Loading findings" /> : (() => {
               const governance = findings.filter((finding) => /tag|policy|owner/i.test(finding.issue || ''))
               return governance.length ? (
                 <FindingsList findings={governance} />
               ) : (
-                <div className="plot-empty" style={{ minHeight: 180 }}>
-                  <strong>No findings recorded</strong>
-                  <p>Governance findings appear when a resource is missing ownership or policy tags.</p>
-                </div>
+                <PlotEmpty title="No findings recorded" description="Governance findings appear when a resource is missing ownership or policy tags." />
               )
             })()}
-          </section>
+          </Panel>
         </>
       )}
 
       {activePage === 'Settings' && (
         <>
-          <div className="page-heading">
-            <div><h1>{TITLES.Settings}</h1><p>{INTROS.Settings}</p></div>
-          </div>
-          <section className="panel settings-page">
-            <h2>Connection settings</h2>
-            <p>Frontend requests use <span className="mono">VITE_API_URL</span>. Backend credentials remain in the standard AWS credential chain and are never exposed to the browser.</p>
-            <dl>
-              <div><dt>API base URL</dt><dd>{import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'}</dd></div>
-              <div><dt>Infrastructure actions</dt><dd>Read-only. Terraform apply is not exposed.</dd></div>
-              <div><dt>Sample mode</dt><dd>On by default, from <span className="mono">src/services/sampleData.js</span>. Append <span style={{ color: 'var(--ink)' }}>?sample=0</span> to the URL to reach a live backend instead.</dd></div>
+          <PageHeading title={TITLES.Settings} intro={INTROS.Settings} />
+          <Panel
+            title="Connection settings"
+            description={<>Frontend requests use <span className="font-mono">VITE_API_URL</span>. Backend credentials remain in the standard AWS credential chain and are never exposed to the browser.</>}
+            className="max-w-3xl"
+          >
+            <dl className="flex flex-col">
+              {[
+                ['API base URL', import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'],
+                ['Infrastructure actions', 'Read-only. Terraform apply is not exposed.'],
+                ['Sample mode', <>On by default, from <span className="font-mono">src/services/sampleData.js</span>. Append <span className="font-mono">?sample=0</span> to reach a live backend instead.</>],
+              ].map(([key, val], i) => (
+                <div key={key}>
+                  {i > 0 && <Separator />}
+                  <div className="grid grid-cols-[180px_1fr] gap-4 py-3">
+                    <dt className="text-muted-foreground text-sm font-medium">{key}</dt>
+                    <dd className="text-sm">{val}</dd>
+                  </div>
+                </div>
+              ))}
             </dl>
-          </section>
+          </Panel>
         </>
       )}
-    </main>
+    </div>
   )
 }
 

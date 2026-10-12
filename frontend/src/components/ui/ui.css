@@ -1,9 +1,0 @@
-/* Shell polish for the StatusPill chip. Tokens live in ../../styles/tokens.css. */
-
-.ui-status__dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: currentColor;
-  display: inline-block;
-}

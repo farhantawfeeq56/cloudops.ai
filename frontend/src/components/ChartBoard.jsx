@@ -38,9 +38,9 @@ export default function ChartBoard({ series = [], currency = 'USD', caption, not
   if (loading) return <EmptyState loading title="Loading measurements" />
   if (!series.length) {
     return (
-      <div className="plot-empty">
-        <strong>No measurements recorded</strong>
-        <p>Cost by service appears here once Cost Explorer answers. The figure stays empty until it can be measured.</p>
+      <div className="border-border flex min-h-[200px] flex-col items-center justify-center gap-1 rounded-lg border border-dashed px-6 text-center">
+        <strong className="text-sm font-medium">No measurements recorded</strong>
+        <p className="text-muted-foreground max-w-[46ch] text-sm leading-relaxed">Cost by service appears here once Cost Explorer answers. The figure stays empty until it can be measured.</p>
       </div>
     )
   }
@@ -55,51 +55,51 @@ export default function ChartBoard({ series = [], currency = 'USD', caption, not
           <AreaChart data={data} margin={{ top: 8, right: 10, bottom: 0, left: 2 }}>
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--brand)" stopOpacity={0.22} />
-                <stop offset="100%" stopColor="var(--brand)" stopOpacity={0.02} />
+                <stop offset="0%" stopColor="var(--chart-3)" stopOpacity={0.22} />
+                <stop offset="100%" stopColor="var(--chart-3)" stopOpacity={0.02} />
               </linearGradient>
             </defs>
-            <CartesianGrid vertical={false} stroke="var(--line)" />
+            <CartesianGrid vertical={false} stroke="var(--border)" />
             <XAxis
               dataKey="label"
-              tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'var(--font-mono)' }}
-              axisLine={{ stroke: 'var(--line)' }}
+              tick={{ fill: 'var(--muted-foreground)', fontSize: 11, fontFamily: 'var(--font-mono)' }}
+              axisLine={{ stroke: 'var(--border)' }}
               tickLine={false}
             />
             <YAxis
               tickFormatter={(v) => compact(v, currency)}
-              tick={{ fill: 'var(--text-muted)', fontSize: 11, fontFamily: 'var(--font-mono)' }}
+              tick={{ fill: 'var(--muted-foreground)', fontSize: 11, fontFamily: 'var(--font-mono)' }}
               axisLine={false}
               tickLine={false}
               width={48}
             />
             <Tooltip
-              cursor={{ stroke: 'var(--brand-line)' }}
+              cursor={{ stroke: 'var(--chart-1)' }}
               content={({ active, payload }) => (active && payload?.length ? (
-                <div className="chart-tip">
+                <div className="bg-popover text-popover-foreground border-border flex items-center gap-3 rounded-md border px-3 py-1.5 text-xs shadow-md">
                   {payload[0].payload.label_full || payload[0].payload.label}
-                  <span className="mono">{new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(payload[0].value)}</span>
+                  <span className="font-mono tabular-nums">{new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(payload[0].value)}</span>
                 </div>
               ) : null)}
             />
             <Area
               type="step"
               dataKey="value"
-              stroke="var(--brand)"
+              stroke="var(--chart-3)"
               strokeWidth={2}
               fill={`url(#${gradientId})`}
               isAnimationActive={animate}
               animationDuration={900}
               animationEasing="ease-out"
               dot={false}
-              activeDot={{ r: 4, fill: 'var(--surface)', stroke: 'var(--brand)', strokeWidth: 2 }}
+              activeDot={{ r: 4, fill: 'var(--card)', stroke: 'var(--chart-3)', strokeWidth: 2 }}
             />
           </AreaChart>
         </ResponsiveContainer>
       </div>
-      <p className="chart-legend">
+      <p className="text-muted-foreground flex items-center justify-between gap-3 pt-2 text-xs">
         <span>{caption}</span>
-        <span className="mono">{note}</span>
+        <span className="font-mono tabular-nums">{note}</span>
       </p>
     </div>
   )

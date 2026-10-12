@@ -1,13 +1,15 @@
-// Measurement register cell: a mono label, a mono tabular measurement, and an
-// honest em dash for anything unmeasured.
+import { Skeleton } from '@/components/ui/skeleton'
+
+// Measurement register cell: a label, a tabular measurement, and an honest em
+// dash for anything unmeasured. The register owns the one card; cells are plain.
 function RegisterCell({ label, value, unmeasured = false, note, loading = false }) {
   return (
-    <div className="register-cell">
-      <span className="register-label">{label}</span>
+    <div className="flex flex-col gap-1">
+      <span className="text-muted-foreground text-xs font-medium">{label}</span>
       {loading
-        ? <span className="register-value skeleton" aria-hidden="true">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        : <span className={`register-value ${unmeasured ? 'is-unmeasured' : ''}`}>{value}</span>}
-      {note && <span className="register-note">{note}</span>}
+        ? <Skeleton className="h-8 w-24" />
+        : <span className={`text-3xl font-semibold tracking-tight tabular-nums ${unmeasured ? 'text-muted-foreground' : 'text-foreground'}`}>{value}</span>}
+      {note && <span className="text-muted-foreground text-xs">{note}</span>}
     </div>
   )
 }
