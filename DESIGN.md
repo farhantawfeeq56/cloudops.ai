@@ -48,11 +48,11 @@ typography:
     fontFamily: "JetBrains Mono, ui-monospace, monospace"
     reason: "Strictly identifiers, costs and tabular data: the measurement face, never a costume."
   scale:
-    page: { fontSize: "28px", fontWeight: 600, letterSpacing: "-0.02em" }
+    page: { fontSize: "20px", fontWeight: 600, letterSpacing: "-0.02em" }
     card: { fontSize: "15px", fontWeight: 600 }
     body: { fontSize: "13px", fontWeight: 400, lineHeight: 1.5 }
     meta: { fontSize: "12px" }
-    kpi: { fontSize: "30px", fontWeight: 600, variantNumeric: "tabular-nums" }
+    kpi: { fontSize: "24px", fontWeight: 600, variantNumeric: "tabular-nums" }
     table: { fontSize: "13px", rowHeight: "48px" }
 spacing: [4, 8, 12, 16, 20, 24, 32, 40, 56]
 radius:
@@ -139,8 +139,8 @@ reason beside it. Never a zero, never a guess.
 Arial fallback. **Data:** JetBrains Mono, tabular figures, for instance IDs,
 costs, dates and table numerals.
 
-Hierarchy: page title 24/600; card title 15/600; body 13/1.5; caption 12; KPI
-value 30/600 tabular; table 13px rows. Sentence case everywhere. Numbers that
+Hierarchy: page title 20/600; card title 16/600; body 14/1.5; caption 12; KPI
+value 24/600 tabular; table 13px rows. Sentence case everywhere. Numbers that
 align or change are mono + tabular.
 
 ## Layout

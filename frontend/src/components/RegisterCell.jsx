@@ -8,7 +8,7 @@ function RegisterCell({ label, value, unmeasured = false, note, loading = false 
       <span className="text-muted-foreground text-xs font-medium">{label}</span>
       {loading
         ? <Skeleton className="h-8 w-24" />
-        : <span className={`text-3xl font-semibold tracking-tight tabular-nums ${unmeasured ? 'text-muted-foreground' : 'text-foreground'}`}>{value}</span>}
+        : <span className={`text-2xl font-semibold tracking-tight tabular-nums ${unmeasured ? 'text-muted-foreground' : 'text-foreground'}`}>{value}</span>}
       {note && <span className="text-muted-foreground text-xs">{note}</span>}
     </div>
   )
