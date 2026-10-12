@@ -58,26 +58,30 @@ function Panel({ title, description, icon, children, className = '', boxed = fal
   if (boxed) {
     return (
       <section className={`border-border bg-card flex flex-col gap-4 rounded-2xl border p-6 ${className}`}>
-        <div className="flex items-start justify-between gap-4">
-          <div className="space-y-1">
-            {title && <h2 className="text-base font-semibold">{title}</h2>}
-            {description && <p className="text-muted-foreground text-sm">{description}</p>}
+        {(title || description || icon) && (
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-1">
+              {title && <h2 className="text-base font-semibold">{title}</h2>}
+              {description && <p className="text-muted-foreground text-sm">{description}</p>}
+            </div>
+            {icon}
           </div>
-          {icon}
-        </div>
+        )}
         {children}
       </section>
     )
   }
   return (
     <section className={`${bordered ? 'border-border border-t pt-6' : ''} ${className}`}>
-      <div className="mb-4 flex items-start justify-between gap-4">
-        <div className="space-y-1">
-          {title && <h2 className="text-base font-semibold">{title}</h2>}
-          {description && <p className="text-muted-foreground text-sm">{description}</p>}
+      {(title || description || icon) && (
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            {title && <h2 className="text-base font-semibold">{title}</h2>}
+            {description && <p className="text-muted-foreground text-sm">{description}</p>}
+          </div>
+          {icon}
         </div>
-        {icon}
-      </div>
+      )}
       {children}
     </section>
   )
