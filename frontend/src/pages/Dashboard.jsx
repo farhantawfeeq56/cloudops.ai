@@ -54,7 +54,7 @@ function DataStatus({ data, loading, lastUpdated, sampleMode = false }) {
   return <Badge variant="outline" className={`h-6 gap-1.5 rounded-full border-transparent px-2.5 ${tone}`}><i className="size-1.5 rounded-full bg-current" /> {label}</Badge>
 }
 
-function Panel({ title, description, icon, children, className = '', boxed = false }) {
+function Panel({ title, description, icon, children, className = '', boxed = false, bordered = true }) {
   if (boxed) {
     return (
       <section className={`border-border bg-card flex flex-col gap-4 rounded-2xl border p-6 ${className}`}>
@@ -70,7 +70,7 @@ function Panel({ title, description, icon, children, className = '', boxed = fal
     )
   }
   return (
-    <section className={`border-border border-t pt-6 ${className}`}>
+    <section className={`${bordered ? 'border-border border-t pt-6' : ''} ${className}`}>
       <div className="mb-4 flex items-start justify-between gap-4">
         <div className="space-y-1">
           {title && <h2 className="text-base font-semibold">{title}</h2>}
@@ -381,9 +381,10 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
       {activePage === 'Cost Analysis' && <CostAnalysis data={data} loading={loading} />}
 
       {activePage === 'AI Insights' && (
-        <>
+        <div className="flex flex-col gap-3">
           <PageHeading title={TITLES['AI Insights']} />
           <Panel
+            bordered={false}
             description={data.insights?.explanation || 'Detection runs on deterministic rules; the explanation layer adds context and trade-offs.'}
             icon={<Bot className="text-muted-foreground size-5" strokeWidth={1.8} />}
           >
@@ -393,7 +394,7 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
               <FindingsList findings={findings} />
             )}
           </Panel>
-        </>
+        </div>
       )}
 
       {activePage === 'IaC Review' && (
