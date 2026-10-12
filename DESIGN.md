@@ -4,7 +4,7 @@ description: The operations console — a calm sage-and-teal workspace where eve
 stack:
   app: "Vite + React 19 SPA over a FastAPI backend"
   styling: "Tailwind CSS v4 + shadcn (base-luma, Base UI primitives, Phosphor icons)"
-  components: "Sidebar, Button, Badge, Card, Table, Input, Alert, Tabs, Separator, Skeleton, Tooltip"
+  components: "Sidebar, Button, Badge, Table, Input, Alert, Tabs, Separator, Skeleton, Tooltip"
   theme: "Light only"
 colors:
   # app tokens (src/styles/tokens.css)
@@ -80,9 +80,9 @@ chart-forward: the signal curve is the loudest element, the findings queue sits
 beside it, and the measurement register is a quiet row of four above both.
 
 The world refuses the dark glowing "AI dashboard", the navy dev-tool cliché,
-and KPI-card wallpaper with no chart anywhere. Depth comes from a hairline card
-border — no shadows, no nested boxes. One container per idea; spacing and
-dividers, not frames inside frames. The read-only promise and the honesty rule
+and KPI-card wallpaper with no chart anywhere. There are no cards: the page is
+the frame, and sections are separated by a single hairline rule. One container
+per screen; spacing, type and rules, not frames inside frames. The read-only promise and the honesty rule
 (an unmeasured value is an em dash, never an invented number) are part of the
 design, not disclaimers under it.
 
@@ -125,10 +125,9 @@ and four status families. No gradients, no glows.
 ### Named Rules
 **The One-Accent Rule.** Teal carries data and selection; ink carries actions;
 status hues carry state. Three jobs, never confused.
-**The Fewer-Boxes Rule.** One card per idea. Inside a card, separate with
-spacing, dividers and typography — never with another bordered, rounded, filled
-frame. Badges are not used for in-row status; buttons that only navigate are
-links.
+**The Fewer-Boxes Rule.** The page is the only frame. Sections are separated by
+spacing and a single hairline rule — never by a bordered, rounded, filled card.
+In-row status is a dot + word, not a chip; buttons that only navigate are links.
 **The Honesty Rule.** A value the API did not return is an em dash with the
 reason beside it. Never a zero, never a guess.
 
@@ -148,14 +147,16 @@ A shadcn `Sidebar` (collapsible to icons, drawer under 768px) and a sticky
 `SidebarInset` header with the sidebar trigger, the connection status and the
 primary action. Content is capped at 1440px and padded 16/24/32px.
 The Overview: heading row with the data-status pill and Refresh, a single
-register card holding four measurement cells, then the cost curve, the findings
-queue, the resource table and the IaC record. Register cells go four-across at
+register stat strip of four measurement cells, then the cost curve, the findings
+queue, the resource table and the IaC record, each as a hairline-separated
+section on the page. Register cells go four-across at
 `lg`, two at `sm`, one on phones.
 
 ## Elevation & Depth
 
-Flat by default: cards are a hairline border on the card surface, no shadow.
-Popovers, tooltips and the sidebar drawer are the only elevated surfaces.
+Flat by default: no card borders and no card shadows. Sections are separated by
+a single hairline rule at the top edge; popovers, tooltips and the sidebar
+drawer are the only elevated surfaces.
 Forced-colors mode keeps every control's shape through transparent borders.
 
 ## Shapes
@@ -169,16 +170,18 @@ Inner radii nest concentrically.
   in the footer, Settings last. Collapses to icons; becomes a Sheet on phones.
 - **Header** — sidebar trigger, wordmark and account, connection `StatusPill`,
   region, dark primary `Add a scan` button.
-- **Register** — one `Card`; each cell is a label, a 30/600 tabular value, a
-  source note. Unmeasured values are an em dash in muted.
+- **Register** — a stat strip, not a card: four cells on the page, each a
+  label, a 30/600 tabular value and a source note. Unmeasured values are an em
+dash in muted.
 - **Chart card** — recharts step-area, 2px teal stroke, teal gradient fill,
   hairline grid, mono ticks, a popover tooltip. Draws in over ~900ms; reduced
   motion gets the static frame.
 - **Findings queue** — a severity dot, the issue in full (never truncated), a
   coloured severity word, the mono resource id, the reported saving, and a
   `Review` link that expands to action / evidence / saving / resource.
-- **Table** — `Input` search, state filter buttons with counts, a sort toggle,
-  hairline rows, mono IDs, a dot+word state, and a utilization meter.
+- **Table** — no card: `Input` search, state filter buttons with counts, a sort
+toggle, hairline rows, mono IDs, a dot+word state and a utilization meter, sitting
+directly on the page.
 - **IaC record** — a two-column spec of six fields, each an em dash with its
   reason, in mono tabular figures. Read-only: no plan is submitted from the UI.
 - **Sample banner** — an `Alert` in warning ink on warning ground; data is

@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import { ArrowDownUp, Search } from 'lucide-react'
 import EmptyState from './EmptyState'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
@@ -49,7 +48,7 @@ function ResourceRow({ resource, metric }) {
         </TableCell>
       </TableRow>
       {open && (
-        <TableRow className="bg-muted/40 hover:bg-muted/40">
+        <TableRow className="hover:bg-transparent">
           <TableCell colSpan={8}>
             <dl className="grid gap-x-6 gap-y-3 py-1 sm:grid-cols-2">
               {spec.map(([key, val], i) => (
@@ -92,19 +91,19 @@ function ResourceTable({ resources = [], metrics = [], loading = false, fullPage
   }, [resources])
 
   return (
-    <Card className={fullPage ? '' : ''}>
-      <CardHeader>
-        <CardTitle>Resources</CardTitle>
-        <CardDescription>EC2 inventory from the latest read-only scan, newest first.</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+    <section className={`border-border border-t pt-6 ${fullPage ? 'flex-1' : ''}`}>
+      <div className="mb-4 space-y-1">
+        <h2 className="text-base font-semibold">Resources</h2>
+        <p className="text-muted-foreground text-sm">EC2 inventory from the latest read-only scan, newest first.</p>
+      </div>
+      <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative min-w-[200px] flex-1 sm:max-w-xs">
             <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" aria-hidden="true" />
-            <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search id, type, tag" aria-label="Search resources" className="bg-card pl-9" />
+            <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search id, type, tag" aria-label="Search resources" className="bg-transparent pl-9" />
           </div>
           {['all', 'running', 'stopped'].map((s) => (
-            <Button key={s} variant={stateFilter === s ? 'default' : 'outline'} size="sm" onClick={() => setStateFilter(s)}>
+            <Button key={s} variant={stateFilter === s ? 'default' : 'ghost'} size="sm" onClick={() => setStateFilter(s)}>
               {s === 'all' ? 'All' : s[0].toUpperCase() + s.slice(1)} ({s === 'all' ? resources.length : states[s] || 0})
             </Button>
           ))}
@@ -113,31 +112,29 @@ function ResourceTable({ resources = [], metrics = [], loading = false, fullPage
           </Button>
         </div>
 
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Resource ID</TableHead><TableHead>Type</TableHead><TableHead>State</TableHead><TableHead>Availability zone</TableHead><TableHead>Environment</TableHead><TableHead>Owner</TableHead><TableHead>Utilization 24h</TableHead><TableHead />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow><TableCell colSpan={8}><EmptyState loading title="Loading resources" /></TableCell></TableRow>
-              ) : filtered.length ? (
-                filtered.map((resource) => <ResourceRow key={resource.instance_id} resource={resource} metric={metricsById[resource.instance_id]} />)
-              ) : (
-                <TableRow><TableCell colSpan={8}><EmptyState title={query || stateFilter !== 'all' ? 'No resources match the current filter' : 'No AWS resources discovered'} description={query || stateFilter !== 'all' ? 'Clear the search or state filter to see the full inventory.' : 'Connect AWS read access and add a scan to populate this sheet.'} /></TableCell></TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Resource ID</TableHead><TableHead>Type</TableHead><TableHead>State</TableHead><TableHead>Availability zone</TableHead><TableHead>Environment</TableHead><TableHead>Owner</TableHead><TableHead>Utilization 24h</TableHead><TableHead />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loading ? (
+              <TableRow><TableCell colSpan={8}><EmptyState loading title="Loading resources" /></TableCell></TableRow>
+            ) : filtered.length ? (
+              filtered.map((resource) => <ResourceRow key={resource.instance_id} resource={resource} metric={metricsById[resource.instance_id]} />)
+            ) : (
+              <TableRow><TableCell colSpan={8}><EmptyState title={query || stateFilter !== 'all' ? 'No resources match the current filter' : 'No AWS resources discovered'} description={query || stateFilter !== 'all' ? 'Clear the search or state filter to see the full inventory.' : 'Connect AWS read access and add a scan to populate this sheet.'} /></TableCell></TableRow>
+            )}
+          </TableBody>
+        </Table>
 
         <div className="text-muted-foreground flex flex-wrap items-center justify-between gap-2 text-xs">
           <span>Showing {filtered.length} of {resources.length} resources</span>
           <span>{metrics.length ? 'Utilization from CloudWatch, last 24h' : 'Utilization unavailable'}</span>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   )
 }
 

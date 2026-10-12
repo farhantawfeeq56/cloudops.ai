@@ -9,7 +9,6 @@ import { sample } from '../services/sampleData'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
@@ -57,14 +56,16 @@ function DataStatus({ data, loading, lastUpdated, sampleMode = false }) {
 
 function Panel({ title, description, icon, children, className = '' }) {
   return (
-    <Card className={`gap-4 ${className}`}>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        {description && <CardDescription>{description}</CardDescription>}
-        {icon && <CardAction>{icon}</CardAction>}
-      </CardHeader>
-      <CardContent>{children}</CardContent>
-    </Card>
+    <section className={`border-border border-t pt-6 ${className}`}>
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <div className="space-y-1">
+          {title && <h2 className="text-base font-semibold">{title}</h2>}
+          {description && <p className="text-muted-foreground text-sm">{description}</p>}
+        </div>
+        {icon}
+      </div>
+      {children}
+    </section>
   )
 }
 
@@ -294,14 +295,12 @@ function CostAnalysis({ data, loading }) {
           </Tabs>
         )}
       />
-      <Card aria-label="Cost register">
-        <CardContent className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <section aria-label="Cost register" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <RegisterCell label="Period total" value={formatCurrency(costs?.total_cost, costs?.currency)} unmeasured={costs?.total_cost == null} note={costs?.start && costs?.end_inclusive ? `${costs.start} → ${costs.end_inclusive}` : 'Cost Explorer'} loading={loading} />
         <RegisterCell label="Services measured" value={costs?.services?.length == null ? DASH : String(costs.services.length)} unmeasured={!costs?.services?.length} note="Grouped by AWS service" loading={loading} />
         <RegisterCell label="Largest service" value={costs?.services?.[0] ? formatCurrency(costs.services[0].cost, costs.currency) : DASH} unmeasured={!costs?.services?.[0]} note={costs?.services?.[0]?.service || 'No service costs returned'} loading={loading} />
         <RegisterCell label="Month-end forecast" value={data.forecast?.available ? formatCurrency(data.forecast.mean, data.forecast.currency) : DASH} unmeasured={!data.forecast?.available} note="AWS GetCostForecast" loading={loading} />
-        </CardContent>
-      </Card>
+      </section>
       <CostPanel costs={costs} dailyCosts={data.dailyCosts} forecast={data.forecast} loading={loading} period={period} />
     </>
   )
@@ -347,14 +346,12 @@ function Dashboard({ activePage = 'Overview', sampleMode = false }) {
 
       {activePage === 'Overview' && (
         <>
-          <Card aria-label="Measurement register">
-          <CardContent className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <section aria-label="Measurement register" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <RegisterCell label="Monthly cloud cost" value={formatCurrency(data.costs?.total_cost, data.costs?.currency)} unmeasured={data.costs?.total_cost == null} note="Cost Explorer, month to date" loading={loading} />
             <RegisterCell label="Resources" value={data.resources?.total_instances == null ? DASH : String(data.resources.total_instances)} unmeasured={data.resources?.total_instances == null} note="EC2 instances discovered" loading={loading} />
             <RegisterCell label="Potential savings" value={savings > 0 ? formatCurrency(savings, data.costs?.currency) : DASH} unmeasured={!(savings > 0)} note="Only where a finding reports it" loading={loading} />
             <RegisterCell label="Active findings" value={data.insights?.total_findings == null ? DASH : String(data.insights.total_findings)} unmeasured={data.insights?.total_findings == null} note="Deterministic decision engine" loading={loading} />
-          </CardContent>
-        </Card>
+          </section>
           <div className="grid gap-6 xl:grid-cols-2">
             <CostPanel costs={data.costs} dailyCosts={data.dailyCosts} forecast={data.forecast} loading={loading} />
             <FindingsPanel findings={findings} loading={loading} />
