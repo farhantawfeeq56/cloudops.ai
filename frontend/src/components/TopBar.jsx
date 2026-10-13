@@ -27,8 +27,8 @@ function AppHeader({ sampleMode = false }) {
   return (
     <header className="bg-background/80 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b px-4 backdrop-blur md:px-6">
       <SidebarTrigger className="-ml-1" />
-      <Separator orientation="vertical" className="mr-1 !h-5" />
-      <span className="font-semibold">CloudOps AI</span>
+      <Separator orientation="vertical" className="mr-1 !h-5 max-sm:hidden" />
+      <span className="hidden font-semibold sm:inline">CloudOps AI</span>
       <span className="text-muted-foreground hidden text-sm sm:inline">AWS Account</span>
       <StatusPill tone={status.tone} title="Live connectivity to the CloudOps AI API (/health)">{status.label}</StatusPill>
       <div className="ml-auto flex items-center gap-2 md:gap-3">

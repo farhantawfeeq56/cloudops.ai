@@ -28,7 +28,7 @@ function App() {
     <TooltipProvider delayDuration={200}>
       <SidebarProvider>
         <AppSidebar activePage={activePage} onNavigate={navigate} />
-        <SidebarInset>
+        <SidebarInset className="min-w-0">
           <AppHeader sampleMode={sampleMode} />
           <Dashboard activePage={activePage} sampleMode={sampleMode} />
         </SidebarInset>

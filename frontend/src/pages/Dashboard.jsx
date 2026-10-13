@@ -52,7 +52,7 @@ function DataStatus({ data, loading, lastUpdated, sampleMode = false }) {
 function Panel({ title, description, icon, children, className = '', boxed = false, bordered = true }) {
   if (boxed) {
     return (
-      <section className={`border-border bg-card flex flex-col gap-4 rounded-2xl border p-6 ${className}`}>
+      <section className={`border-border bg-card flex min-w-0 flex-col gap-4 rounded-2xl border p-6 ${className}`}>
         {(title || description || icon) && (
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-1">
@@ -67,7 +67,7 @@ function Panel({ title, description, icon, children, className = '', boxed = fal
     )
   }
   return (
-    <section className={`${bordered ? 'border-border border-t pt-6' : ''} ${className}`}>
+    <section className={`min-w-0 ${bordered ? 'border-border border-t pt-6' : ''} ${className}`}>
       {(title || description || icon) && (
         <div className="mb-4 flex items-start justify-between gap-4">
           <div className="space-y-1">
